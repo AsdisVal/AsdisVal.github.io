@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- saved from url=(0144)file:///C:/Users/Lenovo/Documents/H%C3%8D/sk%C3%B3la%C3%A1r_4/T%C3%B6lvugraf%C3%ADk/tolvugrafik/AsdisVal.github.io/2D%20Sierpinski%20Gasket.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>2D Sierpinski Gasket</title>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+
+void
+main()
+{
+	gl_PointSize = 1.0;
+    gl_Position = vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void
+main()
+{
+    gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+}
+</script>
+
+<script type="text/javascript" src="./2D Sierpinski Gasket1B_files/webgl-utils.js"></script>
+<script type="text/javascript" src="./2D Sierpinski Gasket1B_files/initShaders.js"></script>
+<script type="text/javascript" src="./2D Sierpinski Gasket1B_files/MV.js"></script>
+<script type="text/javascript" src="./2D Sierpinski Gasket1B_files/gasket1.js"></script>
+</head>
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<input id="slider" type="range" value="5000" min="5000" max="600000" step="10000"/>
+<script >
+const slider = document.querySelector("#slider");
+slider.addEventListener("input", (e) => {
+  NumPoints = parseInt(slider.value, 10);
+  window.onload();
+})
+</script>
+
+
+</body></html>
