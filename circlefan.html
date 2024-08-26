@@ -27,10 +27,21 @@ main()
 <script type="text/javascript" src="./circlefan_files/MV.js"></script>
 <script type="text/javascript" src="./circlefan_files/circlefan.js"></script>
 
-</head><body>
+</head>
+<body>
 <canvas id="gl-canvas" width="512" height="512">&gt;
-Oops ... your browser doesn't support the HTML5 canvas element
+    Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-
-
+<div>
+    Endurkvæmni skref: 3 <input id="slider" type="range" min="3" max="50" step="3" value="3"/> 50.
+</div>
+     
+    
+    <script >
+    const slider = document.querySelector("#slider");
+    slider.addEventListener("input", (e) => {
+      NumPoints = parseInt(slider.value, 10);
+      window.onload();
+    })
+    </script>
 </body></html>

@@ -42,6 +42,11 @@ window.onload = function init() {
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    document.getElementById("slider").onchange = function(event) {
+        numCirclePoints = event.target.value;
+        render();
+    }
     
     render();
 }
@@ -68,5 +73,5 @@ function render() {
     // Draw circle using Triangle Fan
     gl.drawArrays( gl.TRIANGLE_FAN, 0, numCirclePoints+2 );
 
-    window.requestAnimationFrame(render);
+    window.requestAnimFrame(render);
 }
