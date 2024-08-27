@@ -43,10 +43,20 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    document.getElementById("slider").onchange = function(event) {
+    document.getElementById("slider")?.addEventListener("input", function(event) {
         numCirclePoints = event.target.value;
+        console.log(numCirclePoints);
+        createCirclePoints( center, radius, numCirclePoints );
+
+        var vBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+        
+        var vPosition = gl.getAttribLocation(program, "vPosition");
+        gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(vPosition);
         render();
-    }
+    });
     
     render();
 }
