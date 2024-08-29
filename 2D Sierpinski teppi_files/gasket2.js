@@ -22,13 +22,21 @@ window.onload = function init()
 
     var vertices = [
         vec2( -1, -1 ),
-        vec2(  0,  1 ),
-        vec2(  1, -1 )
+        vec2( -1, 1),
+        vec2( 1, 1),
+        //þríhyrningur 1
+        vec2( 1 ,1),
+        vec2(  1, -1)
+        vec2(-1, -1)
+        // þríhyrningur 2
     ];
 
     divideTriangle( vertices[0], vertices[1], vertices[2],
                     NumTimesToSubdivide);
+    
+    divideTriangle(vertices[3], vertices[4], vertices[5], NumTimesToSubdivide);
 
+    
     //
     //  Configure WebGL
     //
