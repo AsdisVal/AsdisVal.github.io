@@ -7,9 +7,8 @@
 var canvas;
 var gl;
 
-// numCirclePoints er fjöldi punkta á hringnum
-// Heildarfjöldi punkta er tveimur meiri (miðpunktur + fyrsti punktur kemur tvisvar)
-var numCirclePoints = 20;       
+// numCirclePoints er fjöldi punkta á hringnum í upphafi
+var numCirclePoints = 3;       
 
 var radius = 0.5;
 var center = vec2(0, 0);
@@ -68,9 +67,9 @@ function createCirclePoints( cent, rad, k )
     points = [];
     points.push( center );
     
-    var dAngle = 2*Math.PI/k;
-    for( i=k; i>=0; i-- ) {
-    	a = i*dAngle;
+    var dAngle = 2*Math.PI/k; // horn í radíönum /k skiptingar
+    for(var i=k; i>=0; i-- ) {
+    	var a = i*dAngle;
     	var p = vec2( rad*Math.sin(a) + cent[0], rad*Math.cos(a) + cent[1] );
     	points.push(p);
     }

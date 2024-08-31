@@ -9,8 +9,7 @@ attribute vec4 vPosition;
 
 void
 main()
-{
-	gl_PointSize = 1.0;
+{gl_PointSize = 1.0;
     gl_Position = vPosition;
 }
 </script>
@@ -35,14 +34,10 @@ main()
 <canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-<input id="slider" type="range" value="5000" min="5000" max="600000" step="10000"/>
-<script >
-const slider = document.querySelector("#slider");
-slider.addEventListener("input", (e) => {
-  NumPoints = parseInt(slider.value, 10);
-  window.onload();
-})
-</script>
+<div>
+  <p>Þegar þú endurhlaðar skjáinn sérðu að valið á hnútunum breytist. </p>
+  <a href="heimadaemi2.html">til baka.</a>
+</div>
 
 
 </body></html>
