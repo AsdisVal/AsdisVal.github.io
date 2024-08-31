@@ -1,11 +1,12 @@
+
 "use strict";
 
 var canvas;
 var gl;
 
-var punktar = [];
+var punktarnir = [];
 
-var FjoldiSkiptinga = 4; 
+var FjoldiSkiptinganna = 4;
 
 window.onload = function init()
 {
@@ -14,20 +15,20 @@ window.onload = function init()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
-    //
-    //  Initialize our data for the Sierpinski Gasket
-    //
+    // Upphafsstillum með fjórum punktum á bilinu [-1 til 1].
 
-    // First, initialize the corners of our gasket with three points.
-
-    var hnutar = [
+    var hnutarnir = [
         vec2( -1, -1 ),
         vec2(-1, 1),
         vec2(1, -1),
         vec2(1, 1),
     ];
 
-    butumFerning(hnutar[0], hnutar[1], hnutar[2], hnutar[3], FjoldiSkiptinga);
+    butumFerninginn(hnutarnir[0], hnutarnir[1], hnutarnir[2], hnutarnir[1], hnutarnir[2], hnutarnir[3], FjoldiSkiptinganna);
+
+
+
+    //butumFerning(hnutar[0], hnutar[1], hnutar[2], hnutar[3], FjoldiSkiptinga);
 
     //
     //  Configure WebGL
@@ -44,7 +45,7 @@ window.onload = function init()
 
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(punktar), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(punktarnir), gl.STATIC_DRAW );
 
     // Associate out shader variables with our data buffer
 
@@ -55,19 +56,22 @@ window.onload = function init()
     render();
 };
 
-// Fallið @ferningur mun hlaða ferningnum inn í punktafylkið. Punktafylkið hefur tengingu við litina.
-function ferningur (a, b, c, d) {
-punktar.push(a, b, c, d);
+
+function ferningurinn (a, b, c, b2, c2, d) {
+    punktarnir.push(a, b, c, b, c, d);
 
 }
 
-function butumFerning(a, b, c, d, skipting){
-    if (skipting === 0) {
-        ferningur(a, b, c, d);
+
+
+function butumFerninginn(a, b, c, b1, c1, d, skiptingin) {
+    if(skiptingin === 0){
+        ferningurinn(a, b, c, b, c, d);
     } else {
         //Finnum punkta fyrir 8 ferninga!
 
         //Ytri punktar
+    
         var ab = mix(a, b, 1/3);
         var ab2 = mix(a, b, 2/3);
         var bd = mix(b, d, 1/3);
@@ -83,24 +87,23 @@ function butumFerning(a, b, c, d, skipting){
         var bc = mix(b, c, 1/3);
         var bc2 = mix(b, c, 2/3);
 
-        //fækkum skiptingu um einn
-        --skipting;
+        --skiptingin;
 
-        //bútum ferninginn niður í átta ferninga!
-        butumFerning(a, ab, ac, ad, skipting);
-        butumFerning(ab, ab2, ad, bc, skipting);
-        butumFerning(ab2, b, bc, bd, skipting);
-        butumFerning(bc, bd, ad2, bd2, skipting);
-        butumFerning(ad2, bd2, cd2, d, skipting);
-        butumFerning(bc2, ad2, cd, cd2, skipting);
-        butumFerning(ac2, bc2, c, cd, skipting);
-        butumFerning(ac, ad, ac2, bc2, skipting);
-        
+         //bútum ferninginn niður í átta ferninga!
+
+         butumFerninginn(a, ab, ac, ab, ac, ad, skiptingin);
+         butumFerninginn(ab, ab2, ad, ab2, ad, bc, skiptingin);
+         butumFerninginn(ab2, b, bc, b, bc, bd, skiptingin);
+         butumFerninginn(bc, bd, ad2, bd, ad2, bd2, skiptingin);
+         butumFerninginn(ad2, bd2, cd2, bd2, cd2, d, skiptingin);
+         butumFerninginn(bc2, ad2, cd, ad2, cd, cd2, skiptingin);
+         butumFerninginn(ac2, bc2, c, bc2, c, cd, skiptingin);
+         butumFerninginn(ac, ad, ac2, ad, ac2, bc2, skiptingin);
     }
 }
 
 function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLE_STRIP, 0, punktar.length );
+    gl.drawArrays( gl.TRIANGLES, 0, punktarnir.length );
 }
