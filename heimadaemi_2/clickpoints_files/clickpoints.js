@@ -9,9 +9,12 @@ var canvas;
 var gl;
 
 // Þarf hámarksfjölda punkta til að taka frá pláss í grafíkminni
-var maxNumPoints = 200;  
+var maxNumCircles = 100;  
 var numCirclePoints = 30; // þetta eru þeir punktar sem myndast utanum músapunktinn
-var circles = []; // þetta mun halda utanum alla hringina sem músin mun búa til 
+var numCirclePoints2 = numCirclePoints + 2;
+var radius = 0.1;
+var index = 0;
+var points = []; // þetta mun halda utanum alla hringina sem músin mun búa til 
 
 window.onload = function init() {
 
@@ -20,7 +23,7 @@ window.onload = function init() {
     if ( !gl ) { alert( "WebGL isn't available" ); }
     
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.95, 1.0, 1.0, 1.0 );
+    gl.clearColor( 0.0, 0.0, 1.0, 1.0 );
 
     //
     //  Load shaders and initialize attribute buffers
@@ -30,7 +33,7 @@ window.onload = function init() {
     
     var vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, 8*maxNumPoints *numCirclePoints, gl.DYNAMIC_DRAW); //* numCirclePoints er nýtt
+    gl.bufferData(gl.ARRAY_BUFFER, 8*maxNumCircles *numCirclePoints2, gl.DYNAMIC_DRAW); //* numCirclePoints er nýtt
     
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
@@ -40,50 +43,48 @@ window.onload = function init() {
 
         gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer);
 
-        //Reiknum miðjuna á punktinum
-        var center = vec2(2 * e.offsetX / canvas.width -1, 2 * (canvas.height - e.offsetY) / canvas.height - 1);
-
-        //Búum síðan til punkta sem myndast utanum miðjupunktinn
-    
-        var radius = Math.random() * 0.1 + 0.05; // slembinn radius á milli 0.05 og 0.15
+         // Calculate coordinates of new center
+         var t = vec2(2*e.offsetX/canvas.width-1, 2*(canvas.height-e.offsetY)/canvas.height-1);
         
-        var circleVertices = []; // punktarnir sem mynda hringinn eru hér
-
-        // Fyrst kemur miðjan af því í TRIANGLE_FAN er fyrsti punkturinn sá sem er gerður blævængur utanum
-        circleVertices.push(center);
-
-        //Búum til punkta utanum miðjuna(center) á hringnum
-        for (var i = 0; i <= numCirclePoints; i++) { // i er frá 0 til 30 að fylgja eftirfarandi ferli:
-            var angle = (i / numCirclePoints) * 2 * Math.PI; 
-            // i/numCirclePoints er brot sem sýnir staðsetninguna á hringnum. 2Pí umbreytir brotinu í radíana sem þekur allan hringinn
-            var x = center[0] + radius * Math.cos(angle);
-            //notum kósínus til að reikna lágrétt hvar brotið/angle, og með angle fáum við gildi á bilinu -1 til 1.
-            //Með því að margfalda með radíusnum skölum við gildin í réttu stærðina af hringnum.
-            // með því að bæta center[0] við færist hnitið í miðju hringsins.
-            var y = center[1] + radius * Math.sin(angle);
-            circleVertices.push(vec2(x, y)); // hvert x, y par er umbreytt í vigur vec2(x,y) og geymd í circleVertices fylkinu. 
-        }
-
-        // Setjið hnútana í hring fylkið. 
-        circles.push(circleVertices);
-
-        //Fletjum og geymum alla hringhnútana í buffernum.
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(circles.flat()));
-       
-    } );
-
-    render();
-}
-
-
-function render() {
-    
-    gl.clear( gl.COLOR_BUFFER_BIT );
-    var offset = 0;
-    circles.forEach(circle => {
-        gl.drawArrays(gl.TRIANGLE_FAN, offset, circle.length);
-        offset += circle.length;
-    });
-
-    window.requestAnimFrame(render);
-}
+         // Get random radius
+         radius = Math.random()*0.3;
+         
+         // Fill points array with vertices for a new circle
+         points = [];
+         createCirclePoints( t, radius, numCirclePoints );
+ 
+         // Add new circle behind the others
+         gl.bufferSubData(gl.ARRAY_BUFFER, 8*index*numCirclePoints2, flatten(points));
+ 
+         index++;
+     } );
+ 
+     render();
+ }
+ 
+ // Create the points of the circle
+ function createCirclePoints( cent, rad, k )
+ {
+     points.push( cent );
+ 
+     var dAngle = 2*Math.PI/k;
+     for( i=k; i>=0; i-- ) {
+         a = i*dAngle;
+         var p = vec2( rad*Math.sin(a) + cent[0], rad*Math.cos(a) + cent[1] );
+         points.push(p);
+     }
+ }
+ 
+ 
+ function render() {
+     
+     gl.clear( gl.COLOR_BUFFER_BIT );
+     
+     // Need to draw the circles one by one, since we are using TRIANGLE_FAN
+     for (i=0; i<index; i++) {
+         gl.drawArrays( gl.TRIANGLE_FAN, i*numCirclePoints2, numCirclePoints2 );
+     }
+ 
+     window.requestAnimFrame(render);
+ }
+ 
