@@ -7,11 +7,16 @@
 var canvas;
 var gl;
 
+
 var colorloc;
 
 
+
+
 var mouseX;             // Old value of x-coordinate  
+var spacebarY; // Old value of y-coordinate
 var movement = false;   // Do we move the paddle?
+var shoot = false; // Do we press the spacebar?
 
 //var maxX = 1.0;
 //var triangleRad = 0.1;
@@ -24,7 +29,7 @@ window.onload = function init() {
     if ( !gl ) { alert( "WebGL isn't available" ); }
     
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.9, 0.9, 0.8, 1.0 );
+    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
 
     //
     //  Load shaders and initialize attribute buffers
@@ -33,16 +38,30 @@ window.onload = function init() {
     gl.useProgram( program );
     
     var vertices = [
-        vec2( -0.1, -0.9 ),
-        vec2( 0.0, -0.8 ),
-        vec2( 0.1, -0.9 ),
 
-        vec2( 0.8, 0.8 ),
-        vec2( 0.9, 0.8 ),
-        vec2( 0.8, 0.9 ),
-        vec2( 0.9, 0.9 ),
-        vec2( 0.9, 0.8 ),
-        vec2( 0.8, 0.9 ),
+        //0 til 2
+        vec2( -0.1, -0.99 ),
+        vec2( 0.0, -0.85 ),
+        vec2( 0.1, -0.99 ),
+
+        //shot
+        vec2( -0.01, -0.99 ),
+        vec2( 0.0, -0.85 ),
+        vec2( 0.01, -0.99 ),
+
+        
+        
+
+        //9 til 15
+        /*
+        vec2( 0.015, 0.015 ),
+        vec2( 0.015, 0.08 ),
+        vec2( 0.01, 0.015 ),
+        vec2(0.015, 0.08),
+        vec2(0.01, 0.08),
+        vec2(0.01, 0.015),
+        */
+        
     ];
     
     
@@ -80,6 +99,31 @@ window.onload = function init() {
         }
     } );
 
+    canvas.addEventListener("keydown", function(e){
+        shoot = true;
+        spacebarY = e.offsetY;
+    });
+
+    canvas.addEventListener("keyup", function(e){
+        shoot = false;
+    });
+
+
+
+    //Event listeners for shooting
+    canvas.addEventListener("keydown", function(e) {
+        if(shoot) {
+            var ymove = 2 * (e.offsetY - spacebarY) /canvas.height;
+            spacebarY = e.offsetY;            
+            for(j=9; j<15; j++) {
+                vertices[0][j] += ymove;
+            }
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+
+        }
+
+    });
+
     render();
 }
 
@@ -87,7 +131,9 @@ window.onload = function init() {
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLES, 0, 9 );
+
+
+    gl.drawArrays( gl.TRIANGLES, 0, 5 );
 
     window.requestAnimFrame(render);
 }
