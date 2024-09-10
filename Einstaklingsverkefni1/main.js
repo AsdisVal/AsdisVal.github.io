@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Sýnir notkun á "mousedown" og "mousemove" atburðum
+// Ásdís Valtýsdóttir
+// Duckhunt    
 //
-//    Hjálmtýr Hafsteinsson, september 2024
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
@@ -11,15 +10,19 @@ var gl;
 var colorloc;
 
 
-
-
-var mouseX;             // Old value of x-coordinate  
-var spacebarY; // Old value of y-coordinate
+// Movement of the triangle
+var mouseX;     // old value of x coordintae 
 var movement = false;   // Do we move the paddle?
+
+// Shooting mechanism
+var spacebarY; // Old value of y-coordinate
 var shoot = false; // Do we press the spacebar?
 
-//var maxX = 1.0;
-//var triangleRad = 0.1;
+//Svæðið er frá -maxX til maxX fyrir byssuna
+var maxX = 1.0;
+
+var triangleRad = 0.1;
+
 
 window.onload = function init() {
 
@@ -44,41 +47,41 @@ window.onload = function init() {
         vec2( 0.0, -0.85 ),
         vec2( 0.1, -0.99 ),
 
-        //shot
+        //shot 3 to 5
+
         vec2( -0.01, -0.99 ),
         vec2( 0.0, -0.85 ),
         vec2( 0.01, -0.99 ),
 
-        
-        
+        // 6 to 8
+        vec2(0.8, 0.8),
+        vec2(0.9, 0.8),
+        vec2(0.8, 0.9),
+        vec2(0.9, 0.9),
+        vec2(0.9, 0.8),
+        vec2(0.8, 0.9),
 
-        //9 til 15
-        /*
-        vec2( 0.015, 0.015 ),
-        vec2( 0.015, 0.08 ),
-        vec2( 0.01, 0.015 ),
-        vec2(0.015, 0.08),
-        vec2(0.01, 0.08),
-        vec2(0.01, 0.015),
-        */
         
     ];
     
     
+    console.log(flatten(vertices))
     // Load the data into the GPU
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.DYNAMIC_DRAW );
 
-    // Associate out shader variables with our data buffer
+    // Associate our shader variables with our data buffer
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    colorloc = gl.getUniformLocation( program, "fcolor" );
+    //locTriangle = gl.getUniformLocation( program, "trianglePos");
+
+   colorloc = gl.getUniformLocation( program, "fcolor" );
 
 
-    // Event listeners for mouse
+    // Event listeners for mouse usage
     canvas.addEventListener("mousedown", function(e){
         movement = true;
         mouseX = e.offsetX;
@@ -106,23 +109,7 @@ window.onload = function init() {
 
     canvas.addEventListener("keyup", function(e){
         shoot = false;
-    });
-
-
-
-    //Event listeners for shooting
-    canvas.addEventListener("keydown", function(e) {
-        if(shoot) {
-            var ymove = 2 * (e.offsetY - spacebarY) /canvas.height;
-            spacebarY = e.offsetY;            
-            for(j=9; j<15; j++) {
-                vertices[0][j] += ymove;
-            }
-            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
-
-        }
-
-    });
+    });    
 
     render();
 }
@@ -133,7 +120,7 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
 
 
-    gl.drawArrays( gl.TRIANGLES, 0, 5 );
+    gl.drawArrays( gl.TRIANGLES, 0, 12 );
 
     window.requestAnimFrame(render);
 }
