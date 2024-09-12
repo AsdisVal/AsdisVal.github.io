@@ -6,23 +6,74 @@
 var canvas;
 var gl;
 
+var vertices = [];
+var program;
 
-var colorloc;
-
+var lastShotTime = Date.now();
 
 // Movement of the triangle
 var mouseX;     // old value of x coordintae 
-var movement = false;   // Do we move the paddle?
-
-// Shooting mechanism
-var spacebarY; // Old value of y-coordinate
-var shoot = false; // Do we press the spacebar?
-
+var gunMovement = false;   // Do we move the paddle?
 //Svæðið er frá -maxX til maxX fyrir byssuna
-var maxX = 1.0;
+var maxXForGun = 1.0;
 
 var triangleRad = 0.1;
 
+let playerScore = 0;
+
+// vigrar f. byssuna
+var gun = [
+
+    vec2( -0.1, -0.99 ),
+    vec2( 0.0, -0.85 ),
+    vec2( 0.1, -0.99 ),
+
+]; 
+
+// öll skot
+var bullets = [];
+// vigrar f. skot
+var bullet = [
+    
+    vec2( -0.01, -0.99 ),
+    vec2( 0.0, -0.85 ),
+    vec2( 0.01, -0.99 ),
+
+];
+
+var birds = [];
+// vigrar f. fugl
+var bird = [
+
+    vec2(0.8, 0.8),
+    vec2(0.9, 0.8),
+    vec2(0.8, 0.9),
+    vec2(0.9, 0.9),
+    vec2(0.9, 0.8),
+    vec2(0.8, 0.9),
+
+];
+
+// vigrar f. stigatöfluna
+var scoreDisplay = [
+    
+    vec2(0.5, 0.5),
+    vec2(0.6, 0.5),
+    vec2(0.5, 0.6),
+    vec2(0.6, 0.6),
+    vec2(0.6, 0.5),
+    vec2(0.5, 0.6),
+
+];
+
+var gunPoint = [
+    vec2(0.0, 0.0),
+    vec2(0.1, 0.0),
+    vec2(0.0, 0.1),
+    vec2(0.1, 0.1),
+    vec2(0.1, 0.0),
+    vec2(0.0, 0.1),
+]
 
 window.onload = function init() {
 
@@ -37,35 +88,93 @@ window.onload = function init() {
     //
     //  Load shaders and initialize attribute buffers
     //
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
+
     
-    var vertices = [
+    // Event listeners for mouse usage
+    canvas.addEventListener("mousedown", function(e){
+        gunMovement = true;
+        mouseX = e.offsetX;
+    } );
 
-        //0 til 2
-        vec2( -0.1, -0.99 ),
-        vec2( 0.0, -0.85 ),
-        vec2( 0.1, -0.99 ),
+    canvas.addEventListener("mouseup", function(e){
+        gunMovement = false;
+    } );
 
-        //shot 3 to 5
+    canvas.addEventListener("mousemove", function(e){
+        if(gunMovement) {
+            var xmove = 2*(e.offsetX - mouseX) / canvas.width;
+            mouseX = e.offsetX;
+            for(i=0; i<3; i++) {
+                gun[i][0] += xmove;
+            }
+           // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(byssa));
+        }
+    } );
 
-        vec2( -0.01, -0.99 ),
-        vec2( 0.0, -0.85 ),
-        vec2( 0.01, -0.99 ),
+    canvas.addEventListener("keydown", function(e){
+        if(e.code === "space") {
+            if(bullets.length < 3) {
+                bullets.push(vec2(gun[2][0], gun[2][1]));
+            }
+        }
+    });    
 
-        // 6 to 8
-        vec2(0.8, 0.8),
-        vec2(0.9, 0.8),
-        vec2(0.8, 0.9),
-        vec2(0.9, 0.9),
-        vec2(0.9, 0.8),
-        vec2(0.8, 0.9),
+    render();
+}
 
+
+function updateBirds() {
+
+    if (birds.length < 6 && Math.random() < 0.01) {
+        var birdY = -0.5 + Math.random() * (0.6);
+        var birdSpeed = (Math.random() * 0.005) + 0.01;
+        let birdX = 1.14;
+        if (Math.random() > 0.4) birdSpeed = -birdSpeed;
+        if (birdSpeed > 0) {
+            birdX = -1.14;
+        }
+        birds.push(vec3(birdX, birdY, birdSpeed));
+    }
+
+    for (var i = birds.length - 1; i >= 0; i--) {
+        birds[i][0] += birds[i][2];
+    }
         
-    ];
+        
+}
+
+
+function render() {
     
+    gl.clear( gl.COLOR_BUFFER_BIT );
+    getAllVertices();
+    updateBirds()
+    gl.drawArrays( gl.TRIANGLES, 0, vertices.length);
+    window.requestAnimFrame(render);
+}
+
+
+function getAllVertices() {
+    vertices = [];
+
+    for (var i = 0; i < gun.length; i++) {
+        vertices.push(gun[i]);
+    }
     
-    console.log(flatten(vertices))
+
+    for(var i = 0; i < birds.length; i++) {
+        for(var j = 0; j < bird.length; j++) {
+            
+            if (birds[i][2] < 0) {
+                vertices.push(vec2(birds[i][0] - bird[j][0], birds[i][1] + bird[j][1]));
+            } else {
+                vertices.push(vec2(birds[i][0] + bird[j][0], birds[i][1] + bird[j][1]));
+            }
+        }            
+    }
+
     // Load the data into the GPU
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
@@ -75,52 +184,4 @@ window.onload = function init() {
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
-
-    //locTriangle = gl.getUniformLocation( program, "trianglePos");
-
-   colorloc = gl.getUniformLocation( program, "fcolor" );
-
-
-    // Event listeners for mouse usage
-    canvas.addEventListener("mousedown", function(e){
-        movement = true;
-        mouseX = e.offsetX;
-    } );
-
-    canvas.addEventListener("mouseup", function(e){
-        movement = false;
-    } );
-
-    canvas.addEventListener("mousemove", function(e){
-        if(movement) {
-            var xmove = 2*(e.offsetX - mouseX)/canvas.width;
-            mouseX = e.offsetX;
-            for(i=0; i<3; i++) {
-                vertices[i][0] += xmove;
-            }
-            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
-        }
-    } );
-
-    canvas.addEventListener("keydown", function(e){
-        shoot = true;
-        spacebarY = e.offsetY;
-    });
-
-    canvas.addEventListener("keyup", function(e){
-        shoot = false;
-    });    
-
-    render();
-}
-
-
-function render() {
-    
-    gl.clear( gl.COLOR_BUFFER_BIT );
-
-
-    gl.drawArrays( gl.TRIANGLES, 0, 12 );
-
-    window.requestAnimFrame(render);
 }
