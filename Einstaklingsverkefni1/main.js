@@ -6,6 +6,11 @@
 var canvas;
 var gl;
 
+var gunOffset, bulletOffset, birdOffset;
+var maxBullets = 3;
+var maxBirds = 6;
+var totalVerticesCount = gun.length + maxBullets*bullet.length + maxBirds*bird.length;
+
 var vertices = [];
 var program;
 
@@ -22,6 +27,7 @@ var triangleRad = 0.1;
 let playerScore = 0;
 
 // vigrar f. byssuna
+
 var gun = [
 
     vec2( -0.1, -0.99 ),
@@ -91,6 +97,34 @@ window.onload = function init() {
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
+    vertices = [];
+
+    for (var i = 0; i < gun.length; i++) {
+        vertices.push(gun[i]);
+    }
+    
+
+    for(var i = 0; i < birds.length; i++) {
+        for(var j = 0; j < bird.length; j++) {
+            
+            if (birds[i][2] < 0) {
+                vertices.push(vec2(birds[i][0] - bird[j][0], birds[i][1] + bird[j][1]));
+            } else {
+                vertices.push(vec2(birds[i][0] + bird[j][0], birds[i][1] + bird[j][1]));
+            }
+        }            
+    }
+
+    // Load the data into the GPU
+    var bufferId = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.DYNAMIC_DRAW );
+
+    // Associate our shader variables with our data buffer
+    var vPosition = gl.getAttribLocation( program, "vPosition" );
+    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vPosition );
+
     
     // Event listeners for mouse usage
     canvas.addEventListener("mousedown", function(e){
@@ -109,7 +143,7 @@ window.onload = function init() {
             for(i=0; i<3; i++) {
                 gun[i][0] += xmove;
             }
-           // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(byssa));
+            //gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(gun ));
         }
     } );
 
