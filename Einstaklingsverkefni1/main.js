@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Sýnir notkun á "mousedown" og "mousemove" atburðum
-//
-//    Hjálmtýr Hafsteinsson, september 2024
+// ásdís valtýsdóttir
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
+
 
 
 var mouseX;             // Old value of x-coordinate  
@@ -24,34 +22,35 @@ window.onload = function init() {
     //
     //  Load shaders and initialize attribute buffers
     //
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    const program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-    
-    var vertices = [
+
+    const gunVertices = [
         //gun
         vec2(-0.1, -0.9 ),
         vec2(0.0, -0.8),
-        vec2(0.1, -0.9),
+        vec2(0.1, -0.9)
+    ];
 
+    const bulletVertices = [
         //bullet
         vec2(-0.05, -0.9 ),
         vec2(0.0, -0.8),
         vec2(0.05, -0.9),
+    ];
 
+    const birdVertices = [
         //bird
         vec2(-0.99, 0.4),
         vec2(-0.99, 0.45),
         vec2(-0.79, 0.45),
         vec2(-0.79, 0.45),
         vec2(-0.79, 0.4),
-        vec2(-0.99, 0.4),
+        vec2(-0.99, 0.4)
 
-        
-
-      
-
-        
-    ];
+    ]
+    
+    const vertices = [].concat(gunVertices, bulletVertices, birdVertices);
     
     // Load the data into the GPU
     var bufferId = gl.createBuffer();
@@ -77,13 +76,19 @@ window.onload = function init() {
         if(movement) {
             var xmove = 2*(e.offsetX - mouseX)/canvas.width;
             mouseX = e.offsetX;
-            for(i=0; i<6; i++) {
-                vertices[i][0] += xmove;
+            for(var i=0; i<3; i++) {
+                gunVertices[i][0] += xmove;
+                bulletVertices[i][0] += xmove;
             }
 
-            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(gunVertices));
+            gl.bufferSubData(gl.ARRAY_BUFFER, flatten(gunVertices).byteLength, flatten(bulletVertices));
         }
     } );
+
+    window.addEventListener("keydown", function(e){
+        console.log("Shoot");
+    });
 
     render();
 }
@@ -92,7 +97,10 @@ window.onload = function init() {
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLES, 0, 12);
+    //gl.drawArrays( gl.TRIANGLES, 0, 12);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);  // Draw gun (3 vertices)
+    gl.drawArrays(gl.TRIANGLES, 3, 3);  // Draw bullet (3 vertices)
+    gl.drawArrays(gl.TRIANGLE_FAN, 6, 6);  // Draw bird (6 vertices)
 
     window.requestAnimFrame(render);
 }
