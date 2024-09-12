@@ -8,6 +8,44 @@ var gl;
 
 var mouseX;             // Old value of x-coordinate  
 var movement = false;   // Do we move the paddle?
+var bulletY = -0.9;
+const gunVertices = [
+    //gun
+    vec2(-0.1, -0.9 ),
+    vec2(0.0, -0.8),
+    vec2(0.1, -0.9)
+];
+
+const bullets = [];
+const bulletVertices = [
+    //bullet
+    vec2(-0.05, -0.9 ),
+    vec2(0.0, -0.8),
+    vec2(0.05, -0.9),
+];
+
+const birds = [];
+const birdVertices = [
+    //bird
+    vec2(-0.99, 0.4),
+    vec2(-0.99, 0.45),
+    vec2(-0.79, 0.45),
+    vec2(-0.79, 0.45),
+    vec2(-0.79, 0.4),
+    vec2(-0.99, 0.4)
+
+]
+
+
+const scorePoint = [
+    vec2(0, 0),
+    vec2(0, -0.08),
+    vec2(0.01, 0),
+    vec2(0, -0.08),
+    vec2(0.01, 0),
+    vec2(0.01, -0.08)
+];
+
 
 window.onload = function init() {
 
@@ -25,32 +63,10 @@ window.onload = function init() {
     const program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
-    const gunVertices = [
-        //gun
-        vec2(-0.1, -0.9 ),
-        vec2(0.0, -0.8),
-        vec2(0.1, -0.9)
-    ];
+    const bullets = [].concat(bulletVertices);
+    const birds = [].concat(birdVertices);
 
-    const bulletVertices = [
-        //bullet
-        vec2(-0.05, -0.9 ),
-        vec2(0.0, -0.8),
-        vec2(0.05, -0.9),
-    ];
-
-    const birdVertices = [
-        //bird
-        vec2(-0.99, 0.4),
-        vec2(-0.99, 0.45),
-        vec2(-0.79, 0.45),
-        vec2(-0.79, 0.45),
-        vec2(-0.79, 0.4),
-        vec2(-0.99, 0.4)
-
-    ]
-    
-    const vertices = [].concat(gunVertices, bulletVertices, birdVertices);
+    const vertices = [].concat(gunVertices, bullets, birds, scorePoint);
     
     // Load the data into the GPU
     var bufferId = gl.createBuffer();
@@ -82,25 +98,41 @@ window.onload = function init() {
             }
 
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(gunVertices));
-            gl.bufferSubData(gl.ARRAY_BUFFER, flatten(gunVertices).byteLength, flatten(bulletVertices));
+            gl.bufferSubData(gl.ARRAY_BUFFER, flatten(gunVertices).byteLength, flatten(bullets));
         }
     } );
 
     window.addEventListener("keydown", function(e){
         console.log("Shoot");
+        shootBullet();
+        
     });
 
     render();
+}
+
+function shootBullet() {
+    addBullet();
+    bullets.push( vec2(bulletVertices[2][0], bulletVertices[2][1]) );
+    for (var i = bullets.length - 1; i >= 0; i--) {
+        bullets[i][1] += 0.01;
+
+        if (bullets[i][1] >= 1.1) {
+            bullets.splice(i, 1);
+        }
+    }
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(bullets));
+}
+
+function addBullet() {
+    console.log("add a bullet");
+
 }
 
 
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT );
-    //gl.drawArrays( gl.TRIANGLES, 0, 12);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);  // Draw gun (3 vertices)
-    gl.drawArrays(gl.TRIANGLES, 3, 3);  // Draw bullet (3 vertices)
-    gl.drawArrays(gl.TRIANGLE_FAN, 6, 6);  // Draw bird (6 vertices)
-
+    gl.drawArrays( gl.TRIANGLES, 0, 18);
     window.requestAnimFrame(render);
 }
