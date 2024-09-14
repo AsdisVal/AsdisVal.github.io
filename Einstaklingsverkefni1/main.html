@@ -8,8 +8,6 @@
             attribute vec4 vPosition;
             attribute vec4 vColor;
             varying vec4 fColor;
-
-
             void
             main()
             {
@@ -17,7 +15,7 @@
                 fColor = vColor;
             }
         </script>
-    
+
         <script id="fragment-shader" type="x-shader/x-fragment">
             precision mediump float;
             varying vec4 fColor;
@@ -27,7 +25,6 @@
                 gl_FragColor = fColor;
             }
         </script>
-    
         <script type="text/javascript" src="./main_files/webgl-utils.js"></script>
         <script type="text/javascript" src="./main_files/initShaders.js"></script>
         <script type="text/javascript" src="./main_files/MV.js"></script>
@@ -43,8 +40,9 @@
         <p>
             Reyndu að skjóta í endurnar(kassana) með byssuni(þríhyrningnum). 
         </p>
-        <p>Ef þú færð fimm stig kláraðiru leikinn. Annars unnu endurnar.</p>
+        <p>Ef þú færð fimm stig kláraðir þú leikinn. Annars unnu endurnar.</p>
+        <p>Ef þú vilt hefja annan leik skaltu endurhlaða skjánum </p>
 
-        <p>Notaðu space til að skjóta og músina til að strjórna byssunni.</p>
+        <p>Notaðu takkann sem myndar bil til að skjóta og músina til að stjórna byssunni.</p>
     </body>
 </html>
