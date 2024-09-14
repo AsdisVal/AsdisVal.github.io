@@ -7,7 +7,7 @@ var vPosition;
 var mouseX;         /* Old value of x-coordinate */
 var movement = false;       /* Do we move the paddle? */
 var speed = Math.random(); 
-var point = 0;
+var score = 0;
 var birdCount = 5;
 var bufferForGun;
 var bufferForBird;
@@ -17,9 +17,11 @@ var gun = [
     vec2(-0.1, -1.0),
     vec2(0.0, -0.7), 
     vec2(0.1, -1.0)];
+var pointVertices = [];
 var bullets = [];
 var birds = [];
 var scorePoint = [];
+var maxPoints = 5;
 
 window.onload = function init() {                                                           /* Comments for function init:*/
     const canvas = document.getElementById("gl-canvas");
@@ -48,6 +50,12 @@ window.onload = function init() {                                               
     bufferForBird = gl.createBuffer();                                                      /* Create some buffer for the birds */
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBird);
     gl.bufferData(gl.ARRAY_BUFFER, birdSpace, gl.DYNAMIC_DRAW);
+
+
+    var pointSpace = new Float32Array(8*maxPoints);
+    bufferForPoint = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
+    gl.bufferData(gl.ARRAY_BUFFER, pointSpace, gl.DYNAMIC_DRAW);
     
     /* Event listeners for mouse incoming */
 
@@ -91,9 +99,9 @@ function createRandomBirds(count) {                         /* Comments for func
         var yPosition = Math.random() * 0.8;                /* Random y between 0 and 0.8*/
         var baseSpeed = Math.random() * 0.02 + 0.005;       /* Random bird speed between 0.005 and 0.025*/
         var direction = Math.random() > 0.5 ? 1 : -1;       /* Randomly choose direction (1 or -1) */ 
-        var speed = baseSpeed * direction;
+        var fly = baseSpeed * direction;
 
-        createBirds.push({ x: xPosition, y: yPosition, speed: speed});
+        createBirds.push({ x: xPosition, y: yPosition, speed: fly});
     }
     return createBirds;
 }
@@ -133,7 +141,7 @@ function drawVertices() {                                                       
 
     for(var i = 0; i < bullets.length; i++) {                                   /* finally draw the bullets */
         var bullet = bullets[i];
-        bullet.y += bullet.speed;
+        bullet.y = bullet.y + bullet.speed;
         var bulletVertices = [
             vec2(bullet.x - 0.005, bullet.y ),
             vec2(bullet.x - 0.005, bullet.y + 0.05),
@@ -151,6 +159,29 @@ function drawVertices() {                                                       
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     }
     detectCollisions();
+
+    for(var i = 0; i < score; i++) {
+        var xPos = 0.95 -i*0.1;
+        var yPos = 0.92;
+        
+        pointVertices= [
+        vec2(xPos -0.02, yPos +0.05), // A
+        vec2(xPos -0.02, yPos -0.03), // B
+        vec2(xPos +0.02, yPos -0.03), // C
+        vec2(xPos +0.02, yPos -0.03), // C
+        vec2(xPos +0.02, yPos + 0.05), // D
+        vec2(xPos -0.02, yPos +0.05) // A
+        ];
+        //pointVertices.push( {x: xPos, y: yPos});
+        //points.push(pointVertices);
+        scorePoint.push(pointVertices);
+       
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(pointVertices));
+    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6 + );
+    
 }
 
 function detectCollisions() {
@@ -177,21 +208,30 @@ function detectCollisions() {
                     
                 bullets.splice(i, 1);
                 birds.splice(j, 1);
-                addPoint();
+                score++;
             }
         });
     });
 }
 
 function addPoint() {
-    point++;
-    if(point < 5) {
-        console.log( point+" stig");
-    } else {
-        console.log( point+" stig");
-        console.log("Þú vannst!");
-    }
 
+    for(var i = 0; i < score; i++) {
+        var xPos = 0.95 -i*0.1;
+        var yPos = 0.95;
+        
+        pointVertices= [
+        vec2(xPos -0.02, yPos +0.05), // A
+        vec2(xPos -0.02, yPos -0.03), // B
+        vec2(xPos +0.02, yPos -0.03), // C
+        vec2(xPos +0.02, yPos -0.03), // C
+        vec2(xPos +0.02, yPos + 0.05), // D
+        vec2(xPos -0.02, yPos +0.05) // A
+        ];
+        pointVertices.push( {x: xPos, y: yPos});
+        //points.push(pointVertices);
+       
+    } 
 }
 
 
