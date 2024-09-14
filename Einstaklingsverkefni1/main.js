@@ -22,9 +22,9 @@ var bufferForPoint;
 // arrays for items in the game
 var gun = 
 [
-    vec2(-0.1, -1.0),
-    vec2(0.0, -0.8), 
-    vec2(0.1, -1.0)
+    vec2(- 0.1, - 1.0),
+    vec2(  0.0, - 0.8), 
+    vec2(  0.1, - 1.0)
 ];
 var pointVertices = [];
 var bullets = [];
@@ -87,7 +87,7 @@ window.onload = function init() {
             let newRightX = gun[2][0] + xmove;
 
             if(newLeftX >= -1.0 && newRightX <= 1.0) {     // Þetta skorðar byssuna inn fyrir rammann.
-                for(let i=0; i<3; i++) gun[i][0] += xmove;
+                for(let i = 0; i < 3; i++) gun[i][0] += xmove;
             }
             gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(gun));
@@ -97,7 +97,7 @@ window.onload = function init() {
     // Event listener for spacebar  
     window.addEventListener("keydown", e => {                                             
         if(e.code === "Space" && bullets.length < 3) {
-            bullets.push({x: gun[1][0], y: -0.8, speed: 0.05});   
+            bullets.push({x: gun[1][0], y: - 0.8, speed: 0.05});   
         }
     });
     birds = createRandomBirds(birdCount);
@@ -110,8 +110,8 @@ function createRandomBirds(count) {
     for(let i = 0; i < count; i++) {
         var xPosition = Math.random() * 2 - 1;              // Slembin x staðsetning á milli -1 og 1 
         var yPosition = Math.random() * 0.8;                // Slembin y staðsetning á milli 0 og 0.8
-        var baseSpeed = Math.random() * 0.02 + 0.005;       // Slembinn fuglahraði á milli 0.005 og 0.025
-        var direction = Math.random() > 0.5 ? 1 : -1;       // Slembin átt valin (1 eða -1) 
+        var baseSpeed = Math.random() * 0.02 + 0.008;       // Slembinn fuglahraði á milli 0.005 og 0.025
+        var direction = Math.random() > 0.5 ? 1 : - 1;       // Slembin átt valin (1 eða -1) 
         var IAmSpeed = baseSpeed * direction;   
 
         createBirds.push({ x: xPosition, y: yPosition, speed: IAmSpeed});
@@ -129,13 +129,13 @@ function drawVertices() {
         bird.x += bird.speed;
         
         if(bird.x > 1.1){ 
-            bird.x = -1.1; 
+            bird.x = - 1.1; 
         }                         // þetta lætur fuglana birtast hinum megin þegar þeir fara út úr rammanum 
-        if(bird.x < -1.1) { 
+        if(bird.x < - 1.1) { 
             bird.x = 1.1; 
         }    
 
-        let offsetBirds = Float32Array.BYTES_PER_ELEMENT*i*bitSpace;               
+        let offsetBirds = Float32Array.BYTES_PER_ELEMENT * i * bitSpace;               
 
         var birdVertices = 
         [
@@ -153,7 +153,7 @@ function drawVertices() {
     
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);                
     for(var i = 0; i < birds.length; i++) {
-        gl.drawArrays(gl.TRIANGLES, i*twoTriangles, twoTriangles);
+        gl.drawArrays(gl.TRIANGLES, i * twoTriangles, twoTriangles);
     }
 
     for(var i = 0; i < bullets.length; i++) {     // teiknum skotin 
@@ -181,17 +181,17 @@ function drawVertices() {
     birdVsBullet();
 
     for(var i = 0; i < score; i++) {   // teiknum stig 
-        var xPos = 0.95 - i*0.1;       // -i*0.1 hliðrar x staðsetningunni um 0.1
+        var xPos = 0.95 - i * 0.1;       // -i*0.1 hliðrar x staðsetningunni um 0.1
         var yPos = 0.92;               // við viljum hafa y hnitin eins fyrir stigin
         
         pointVertices = 
         [
-            vec2(xPos -0.02, yPos +0.05), // A
-            vec2(xPos -0.02, yPos -0.03), // B
-            vec2(xPos +0.02, yPos -0.03), // C
-            vec2(xPos +0.02, yPos -0.03), // C
-            vec2(xPos +0.02, yPos + 0.05),// D
-            vec2(xPos -0.02, yPos +0.05)  // A
+            vec2(xPos - 0.02, yPos + 0.05), // A
+            vec2(xPos - 0.02, yPos - 0.03), // B
+            vec2(xPos + 0.02, yPos - 0.03), // C
+            vec2(xPos + 0.02, yPos - 0.03), // C
+            vec2(xPos + 0.02, yPos + 0.05),// D
+            vec2(xPos - 0.02, yPos + 0.05)  // A
         ];
 
         scorePoint.push(pointVertices);
@@ -215,9 +215,9 @@ function birdVsBullet() {
 
             const birdBounds = 
             {
-                left: bird.x -0.07, 
-                right: bird.x + 0.07, 
-                top: bird.y +0.04, 
+                left: bird.x - 0.08, 
+                right: bird.x + 0.08, 
+                top: bird.y + 0.04, 
                 bottom: bird.y - 0.01
             };
 
