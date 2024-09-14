@@ -14,7 +14,7 @@ var bufferForPoint;
 var gun = 
 [
     vec2(-0.1, -1.0),
-    vec2(0.0, -0.7), 
+    vec2(0.0, -0.8), 
     vec2(0.1, -1.0)
 ];
 var pointVertices = [];
@@ -84,7 +84,7 @@ window.onload = function init() {
     // Event listener fyrir spacebar  
     window.addEventListener("keydown", e => {                                             
         if(e.code === "Space" && bullets.length < 3) {
-            bullets.push({x: gun[1][0], y: -0.7, speed: 0.05});   
+            bullets.push({x: gun[1][0], y: -0.8, speed: 0.05});   
         }
     });
     birds = createRandomBirds(birdCount);
