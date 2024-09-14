@@ -172,15 +172,13 @@ function drawVertices() {                                                       
         vec2(xPos +0.02, yPos + 0.05), // D
         vec2(xPos -0.02, yPos +0.05) // A
         ];
-        //pointVertices.push( {x: xPos, y: yPos});
-        //points.push(pointVertices);
         scorePoint.push(pointVertices);
-       
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(pointVertices));
+        gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(pointVertices));
-    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    
     
 }
 
