@@ -10,6 +10,7 @@ html {
 *::before,
 *::after {
   box-sizing: inherit;
+  color: yellow;
 }
 
 /* Stillingar */
@@ -19,6 +20,14 @@ html {
   --spacing: 1rem;
 }
 
+body {
+  background-color: black;
+  
+}
+
+p {
+  color: rgb(255, 255, 136);
+}
 h1,
 h2,
 h3 {
@@ -36,11 +45,20 @@ main {
 
 header {
   font-size:xx-large;
+  color: rgb(255, 255, 136);
+  margin-left: 190px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  
   
   
 }
 
 canvas {
   border: 2px solid black;
+  
+  
 }
+
+
 

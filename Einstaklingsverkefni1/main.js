@@ -2,11 +2,9 @@
 // Ásdís Valtýsdóttir                           September, 2024 //
 //////////////////////////////////////////////////////////////////
 var gl;
-var renderId;
 var vPosition;
 var mouseX;         /* Old value of x-coordinate */
-var movement = false;       /* Do we move the paddle? */
-var speed = Math.random(); 
+var movement = false;       /* Do we move the paddle? */ 
 var score = 0;
 var birdCount = 5;
 var bufferForGun;
@@ -74,7 +72,7 @@ window.onload = function init() {                                               
             let newLeftX = gun[0][0] + xmove;
             let newRightX = gun[2][0] + xmove;
 
-            if(newLeftX >= -1.0 && newRightX <= 1.0) {
+            if(newLeftX >= -1.0 && newRightX <= 1.0) {     // Þetta skorðar byssuna inn fyrir rammann.
                 for(let i=0; i<3; i++) gun[i][0] += xmove;
             }
             gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);
@@ -82,7 +80,7 @@ window.onload = function init() {                                               
         }
     });
 
-    window.addEventListener("keydown", e => {                                               /* Event listener for spacebar */ 
+    window.addEventListener("keydown", e => {                                               // Event listener fyrir spacebar  
         if(e.code === "Space" && bullets.length < 3) {
             bullets.push({x: gun[1][0], y: -0.7, speed: 0.05});   
         }
@@ -91,36 +89,36 @@ window.onload = function init() {                                               
     render();
 }
 
-function createRandomBirds(count) {                         /* Comments for function createRandomBirds:*/
+function createRandomBirds(count) {                         
     var createBirds = [];
 
     for(let i = 0; i < count; i++) {
-        var xPosition = Math.random() * 2 - 1;              /* Random x between -1 and 1 */
-        var yPosition = Math.random() * 0.8;                /* Random y between 0 and 0.8*/
-        var baseSpeed = Math.random() * 0.02 + 0.005;       /* Random bird speed between 0.005 and 0.025*/
-        var direction = Math.random() > 0.5 ? 1 : -1;       /* Randomly choose direction (1 or -1) */ 
-        var fly = baseSpeed * direction;
+        var xPosition = Math.random() * 2 - 1;              // Random x between -1 and 1 
+        var yPosition = Math.random() * 0.8;                // Random y between 0 and 0.8
+        var baseSpeed = Math.random() * 0.02 + 0.005;       // Random bird speed between 0.005 and 0.025
+        var direction = Math.random() > 0.5 ? 1 : -1;       // Randomly choose direction (1 or -1) 
+        var IAmSpeed = baseSpeed * direction;   //Leiftur McQueen
 
-        createBirds.push({ x: xPosition, y: yPosition, speed: fly});
+        createBirds.push({ x: xPosition, y: yPosition, speed: IAmSpeed});
     }
     return createBirds;
 }
 
 
-function drawVertices() {                                                       /* Comments for function drawVertices:*/
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);                               /* First we add the gun */
+function drawVertices() {                                                       
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);                               // teiknum byssuna 
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     
-    for(var i = 0; i < birds.length; i++) {                                     /* Then draw the birds */
+    for(var i = 0; i < birds.length; i++) {                                     // teiknum fuglana 
         var bird = birds[i];
         bird.x += bird.speed;
         
-        let offset = Float32Array.BYTES_PER_ELEMENT*i*8;                        /* Then specify (in bytes) where the data replacement will start */
+        let offset = Float32Array.BYTES_PER_ELEMENT*i*8;                        // Tilgreinum í bætum hvar gagnaskiptin munu hefjast 
         
         if(bird.x > 1.1){ 
             bird.x = -1.1; 
-        }                                                                       /* Let's make birds teleport */
+        }                                                                       // þetta lætur fuglana birtast hinum megin þegar þeir fara út úr canvasnum 
         if(bird.x < -1.1) { 
             bird.x = 1.1; 
         }       
@@ -134,12 +132,12 @@ function drawVertices() {                                                       
         gl.bufferSubData(gl.ARRAY_BUFFER, offset, flatten(birdVertices));
     }
     
-    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);                /* We need to bind the buffer to vPosition */
+    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);                
     for(var i = 0; i < birds.length; i++) {
         gl.drawArrays(gl.TRIANGLE_FAN, i*4, 4);
     }
 
-    for(var i = 0; i < bullets.length; i++) {                                   /* finally draw the bullets */
+    for(var i = 0; i < bullets.length; i++) {                                   // teiknum skotin 
         var bullet = bullets[i];
         bullet.y = bullet.y + bullet.speed;
         var bulletVertices = [
@@ -160,9 +158,9 @@ function drawVertices() {                                                       
     }
     detectCollisions();
 
-    for(var i = 0; i < score; i++) {
-        var xPos = 0.95 -i*0.1;
-        var yPos = 0.92;
+    for(var i = 0; i < score; i++) {                                                // teiknum stig 
+        var xPos = 0.95 - i*0.1;                                                    // -i*0.1 hliðrar x staðsetningunni um 0.1
+        var yPos = 0.92;                                                            // við viljum hafa y hnitin eins fyrir stigin
         
         pointVertices= [
         vec2(xPos -0.02, yPos +0.05), // A
@@ -172,14 +170,13 @@ function drawVertices() {                                                       
         vec2(xPos +0.02, yPos + 0.05), // D
         vec2(xPos -0.02, yPos +0.05) // A
         ];
+
         scorePoint.push(pointVertices);
         gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(pointVertices));
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
-    
-    
 }
 
 function detectCollisions() {
@@ -211,28 +208,6 @@ function detectCollisions() {
         });
     });
 }
-
-function addPoint() {
-
-    for(var i = 0; i < score; i++) {
-        var xPos = 0.95 -i*0.1;
-        var yPos = 0.95;
-        
-        pointVertices= [
-        vec2(xPos -0.02, yPos +0.05), // A
-        vec2(xPos -0.02, yPos -0.03), // B
-        vec2(xPos +0.02, yPos -0.03), // C
-        vec2(xPos +0.02, yPos -0.03), // C
-        vec2(xPos +0.02, yPos + 0.05), // D
-        vec2(xPos -0.02, yPos +0.05) // A
-        ];
-        pointVertices.push( {x: xPos, y: yPos});
-        //points.push(pointVertices);
-       
-    } 
-}
-
-
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
