@@ -3,14 +3,23 @@
 //////////////////////////////////////////////////////////////////
 var gl;
 var vPosition;
-var mouseX;         /* Old value of x-coordinate */
-var movement = false;       /* Do we move the paddle? */ 
+
+// for event listeners
+var mouseX;         
+var movement = false;       
+
+// counters and limits
 var score = 0;
 var birdCount = 5;
+var maxPoints = 5;
+
+// buffers
 var bufferForGun;
 var bufferForBird;
 var bufferForBullet;
 var bufferForPoint;
+
+// arrays for items in the game
 var gun = 
 [
     vec2(-0.1, -1.0),
@@ -21,7 +30,11 @@ var pointVertices = [];
 var bullets = [];
 var birds = [];
 var scorePoint = [];
-var maxPoints = 5;
+
+// regular numbers for buffer:
+var bitSpace = 12;
+var twoTriangles = 6;
+
 
 window.onload = function init() {                                                           
     const canvas = document.getElementById("gl-canvas");
@@ -41,18 +54,18 @@ window.onload = function init() {
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(gun), gl.DYNAMIC_DRAW);
     
-    var bulletSpace = new Float32Array(8);                                                  
+    var bulletSpace = new Float32Array(bitSpace);                                                  
     bufferForBullet = gl.createBuffer();                                                    
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBullet);
     gl.bufferData(gl.ARRAY_BUFFER, bulletSpace, gl.DYNAMIC_DRAW);
     
-    var birdSpace = new Float32Array(birdCount*8);                                          
+    var birdSpace = new Float32Array(birdCount*bitSpace);                                          
     bufferForBird = gl.createBuffer();                                                      
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBird);
     gl.bufferData(gl.ARRAY_BUFFER, birdSpace, gl.DYNAMIC_DRAW);
 
 
-    var pointSpace = new Float32Array(8*maxPoints);
+    var pointSpace = new Float32Array(bitSpace*maxPoints);
     bufferForPoint = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
     gl.bufferData(gl.ARRAY_BUFFER, pointSpace, gl.DYNAMIC_DRAW);
@@ -81,7 +94,7 @@ window.onload = function init() {
         }
     });
 
-    // Event listener fyrir spacebar  
+    // Event listener for spacebar  
     window.addEventListener("keydown", e => {                                             
         if(e.code === "Space" && bullets.length < 3) {
             bullets.push({x: gun[1][0], y: -0.8, speed: 0.05});   
@@ -122,12 +135,16 @@ function drawVertices() {
             bird.x = 1.1; 
         }    
 
-        let offsetBirds = Float32Array.BYTES_PER_ELEMENT*i*8;               
+        let offsetBirds = Float32Array.BYTES_PER_ELEMENT*i*12;               
 
         var birdVertices = 
         [
-            vec2(bird.x - 0.07, bird.y - 0.01), vec2(bird.x - 0.07, bird.y + 0.03), 
-            vec2(bird.x + 0.07, bird.y + 0.03), vec2(bird.x + 0.07, bird.y - 0.01)
+            vec2(bird.x - 0.07, bird.y - 0.01), // A
+            vec2(bird.x - 0.07, bird.y + 0.03), // B
+            vec2(bird.x + 0.07, bird.y + 0.03), // C
+            vec2(bird.x + 0.07, bird.y + 0.03), // C
+            vec2(bird.x + 0.07, bird.y - 0.01), // D
+            vec2(bird.x - 0.07, bird.y - 0.01)  // A
         ]; 
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBird);
@@ -136,7 +153,7 @@ function drawVertices() {
     
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);                
     for(var i = 0; i < birds.length; i++) {
-        gl.drawArrays(gl.TRIANGLE_FAN, i*4, 4);
+        gl.drawArrays(gl.TRIANGLES, i*twoTriangles, twoTriangles);
     }
 
     for(var i = 0; i < bullets.length; i++) {     // teiknum skotin 
@@ -144,10 +161,12 @@ function drawVertices() {
         bullet.y = bullet.y + bullet.speed;
         var bulletVertices = 
         [
-            vec2(bullet.x - 0.005, bullet.y ),
-            vec2(bullet.x - 0.005, bullet.y + 0.05),
-            vec2(bullet.x + 0.01, bullet.y + 0.05),
-            vec2(bullet.x + 0.01, bullet.y)
+            vec2(bullet.x - 0.005, bullet.y ),        // A
+            vec2(bullet.x - 0.005, bullet.y + 0.05),  // B
+            vec2(bullet.x + 0.01, bullet.y + 0.05),   // C
+            vec2(bullet.x + 0.01, bullet.y + 0.05),   // C
+            vec2(bullet.x + 0.01, bullet.y),          // D
+            vec2(bullet.x - 0.005, bullet.y )         // A
         ]; 
         
         if(bullet.y > 1.0) {
@@ -157,7 +176,7 @@ function drawVertices() {
         gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBullet);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(bulletVertices));
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+        gl.drawArrays(gl.TRIANGLES, 0, twoTriangles);
     }
     detectCollisions();
 
@@ -179,7 +198,7 @@ function drawVertices() {
         gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(pointVertices));
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawArrays(gl.TRIANGLES, 0, twoTriangles);
     }
 }
 
