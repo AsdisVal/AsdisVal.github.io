@@ -135,7 +135,7 @@ function drawVertices() {
             bird.x = 1.1; 
         }    
 
-        let offsetBirds = Float32Array.BYTES_PER_ELEMENT*i*12;               
+        let offsetBirds = Float32Array.BYTES_PER_ELEMENT*i*bitSpace;               
 
         var birdVertices = 
         [
@@ -178,7 +178,7 @@ function drawVertices() {
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLES, 0, twoTriangles);
     }
-    detectCollisions();
+    birdVsBullet();
 
     for(var i = 0; i < score; i++) {   // teiknum stig 
         var xPos = 0.95 - i*0.1;       // -i*0.1 hliðrar x staðsetningunni um 0.1
@@ -202,7 +202,7 @@ function drawVertices() {
     }
 }
 
-function detectCollisions() {
+function birdVsBullet() {
     bullets.forEach((bullet, i) => {
         birds.forEach((bird, j) => {
             const bulletBounds = 
