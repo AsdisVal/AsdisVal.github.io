@@ -26,7 +26,7 @@ window.onload = function init() {                                               
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)  alert("WebGL isn't available"); 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.55, 0.9, 0.8, 1.0 );
+    gl.clearColor( 1.0, 1.0, 0.5, 1.0 );
     
     const program = initShaders(gl, "vertex-shader", "fragment-shader");                    /* Load shaders and initialize attribute buffers */
     gl.useProgram(program);
@@ -117,12 +117,11 @@ function drawVertices() {                                                       
             bird.x = 1.1; 
         }       
 
-        var bird
+        
         var birdVertices = [vec2(bird.x - 0.07, bird.y - 0.01), 
                             vec2(bird.x - 0.07, bird.y + 0.03), 
                             vec2(bird.x + 0.07, bird.y + 0.03), 
-                            vec2(bird.x + 0.07, bird.y - 0.01)];
-        
+                            vec2(bird.x + 0.07, bird.y - 0.01)]; 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBird);
         gl.bufferSubData(gl.ARRAY_BUFFER, offset, flatten(birdVertices));
     }
