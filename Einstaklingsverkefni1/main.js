@@ -106,7 +106,6 @@ function createRandomBirds(count) {
     return createBirds;
 }
 
-
 function drawVertices() {                                                       
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForGun);    // teiknum byssuna 
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
