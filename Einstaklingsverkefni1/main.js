@@ -59,13 +59,13 @@ window.onload = function init() {
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBullet);
     gl.bufferData(gl.ARRAY_BUFFER, bulletSpace, gl.DYNAMIC_DRAW);
     
-    var birdSpace = new Float32Array(birdCount*bitSpace);                                          
+    var birdSpace = new Float32Array(birdCount * bitSpace);                                          
     bufferForBird = gl.createBuffer();                                                      
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForBird);
     gl.bufferData(gl.ARRAY_BUFFER, birdSpace, gl.DYNAMIC_DRAW);
 
 
-    var pointSpace = new Float32Array(bitSpace*maxPoints);
+    var pointSpace = new Float32Array(bitSpace * maxPoints);
     bufferForPoint = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferForPoint);
     gl.bufferData(gl.ARRAY_BUFFER, pointSpace, gl.DYNAMIC_DRAW);
@@ -80,7 +80,7 @@ window.onload = function init() {
 
     canvas.addEventListener("mousemove", e => {
         if(movement) {
-            const xmove = 2*(e.offsetX - mouseX)/canvas.width;
+            const xmove = 2 * (e.offsetX - mouseX)/canvas.width;
             mouseX = e.offsetX;
 
             let newLeftX = gun[0][0] + xmove;
