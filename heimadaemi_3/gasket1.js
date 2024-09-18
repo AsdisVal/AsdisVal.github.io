@@ -6,6 +6,9 @@ var points;
 var mouseX, mouseY;         
 var movement = false;
 
+var uniformColor;
+var currentColor = [0.0, 0.0, 1.0, 1.0];
+
 var NumPoints = 5000;
 var zoomFactor = 1.1; 
 
@@ -73,6 +76,11 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
+    uniformColor = gl.getUniformLocation(program, "uniformColor");
+
+    gl.uniform4fv(uniformColor, currentColor);
+
+
     canvas.addEventListener("mousedown", (e) => {
         movement = true;
         mouseX = e.offsetX;
@@ -125,8 +133,18 @@ window.onload = function init()
         render();
     });
 
+    window.addEventListener("keydown", (e) => {
+        if(e.code === "Space") {
+            currentColor = [Math.random(), Math.random(), Math.random(), 1];
+            gl.uniform4fv(uniformColor, currentColor);
+            render();
+        }
+    });
+
     render();
 };
+
+
 
 
 function render() {
