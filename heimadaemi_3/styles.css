@@ -1,0 +1,35 @@
+@charset "UTF-8";
+/* Reset og border-box á allt */
+
+
+html {
+  box-sizing: border-box;
+}
+
+
+
+/* Stillingar */
+:root {
+  /* Grunn bilið okkar er 1rem == 16px */
+  --font-base-body-px: 16px;
+  --spacing: 1rem;
+}
+
+
+
+
+
+
+main {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1000px;
+}
+
+
+
+canvas {
+  border: 2px solid black;
+  
+  
+}
