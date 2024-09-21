@@ -2,6 +2,9 @@
 //    Ásdís Valtýsdóttir, september 2024
 ////////////////////////////////////////////////////////////////////
 var gl;
+var locTime;
+var iniTime;
+var canvasRes;
 
 window.onload = function init()
 {
@@ -41,7 +44,8 @@ window.onload = function init()
 
     //  Get canvas resolution and send to shaders
     canvasRes = vec2(canvas.width, canvas.height);
-    gl.uniform2fv( gl.getUniformLocation( program, "resolution" ), flatten(canvasRes) )
+    var resolutionLocation =gl.getUniformLocation( program, "resolution" ); 
+    gl.uniform2fv( resolutionLocation, flatten(canvasRes) )
 
     render();
 };
