@@ -1,9 +1,5 @@
 ////////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Sýnir hvernig hægt er að nota bútalitarann til að lita
-//     depil á ferning sem fyllir allan strigann.
-//
-//    Hjálmtýr Hafsteinsson, september 2024
+//    Ásdís Valtýsdóttir, september 2024
 ////////////////////////////////////////////////////////////////////
 var gl;
 

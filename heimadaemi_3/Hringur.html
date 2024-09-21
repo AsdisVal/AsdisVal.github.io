@@ -32,9 +32,9 @@ void main()
     st.y += sin(time * 0.002) * 0.2;
     
     if (length(st) < 0.1)
-        color = vec4(1.0, 1.0, 0.0, 1.0);   // Gulur
+        color = vec4(0.9, 0.8, 0.0, 1.0);   // Gulur
     else
-        color = vec4(0.0, 0.0, 1.0, 1.0);   // Blár
+        color = vec4(0.5, 0.3, 0.4, 1.0);   // Rauður
     
     gl_FragColor = color;
 }
