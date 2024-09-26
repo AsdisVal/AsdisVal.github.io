@@ -153,14 +153,37 @@ function render()
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     // then the back
-    mv1 = mult(mv, translate(0.0, 0.09, 0.28));
+    mv1 = mult(mv, translate(0.0, 0.03, 0.13)); 
     mv1 = mult(mv1, scalem(0.76, 0.96, 0.02));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
+    //then the top
+    mv1 = mult(mv, translate(0.0, 0.52, 0.0)); 
+    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
+    // then the upper drawer
+    mv1 = mult(mv, translate(0.0, 0.20, 0.0)); 
+    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     
+    // then the lower drawer
+    mv1 = mult(mv, translate(0.0, -0.10, 0.0)); 
+    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+    // then the floor box
+    mv1 = mult(mv, translate(0.0, -0.475, 0.0)); 
+    mv1 = mult(mv1, scalem(0.76, 0.11, 0.28));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+
     requestAnimFrame( render );
 }
 
