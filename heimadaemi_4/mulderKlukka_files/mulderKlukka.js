@@ -1,5 +1,4 @@
 /////////////////////////////////////////////////////////////////
-//
 //    Ásdís Valtýsdóttir, september 2024
 /////////////////////////////////////////////////////////////////
 var canvas;
@@ -7,11 +6,8 @@ var gl;
 
 var numVertices  = 36;
 
-
 var points = [];
-
 var colors = [];
-
 
 var movement = false;     // Do we rotate?
 var spinX = 0;
@@ -19,20 +15,25 @@ var spinY = 0;
 var origX;
 var origY;
 
+var rotYear = 0.0;
+var rotDay = 0.0;
+
+
 var matrixLoc;
+
 
 window.onload = function init()
 {
     canvas = document.getElementById( "gl-canvas" );
-    
+
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
     colorCube();
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
-    
+    gl.clearColor( 0.9, 1.0, 1.0, 1.0 );
+
     gl.enable(gl.DEPTH_TEST);
 
     //
@@ -40,7 +41,7 @@ window.onload = function init()
     //
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-    
+
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW );
@@ -57,7 +58,7 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    matrixLoc = gl.getUniformLocation( program, "transform" );
+    matrixLoc = gl.getUniformLocation( program, "rotation" );
 
     //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
@@ -79,7 +80,7 @@ window.onload = function init()
             origY = e.offsetY;
         }
     } );
-    
+
     render();
 }
 
@@ -117,7 +118,12 @@ function quad(a, b, c, d)
         [ 1.0, 1.0, 1.0, 1.0 ]   // white
     ];
 
+    // We need to parition the quad into two triangles in order for
+    // WebGL to be able to render it.  In this case, we create two
+    // triangles from the quad indices
+    
     //vertex color assigned by the index of the vertex
+    
     var indices = [ a, b, c, a, c, d ];
 
     for ( var i = 0; i < indices.length; ++i ) {
@@ -132,56 +138,24 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    rotDay += 10.0;
+    rotYear += 0.5;        // not the correct value, but looks better!
+
     var mv = mat4();
     mv = mult( mv, rotateX(spinX) );
-    mv = mult( mv, rotateY(spinY) ) ;
+    mv = mult( mv, rotateY(spinY) );
 
-    // Build the letter H...
-    // First the left side
-    mv1 = mult( mv, translate( -0.38, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.02, 1.06, 0.28 ) );
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    // teikna klukkustundaarminn
+    mv = mult( mv, scalem( 0.3, 0.3, 0.3 ) );
 
     
-    // Then the right side
-    mv1 = mult( mv, translate( 0.38, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.02, 1.06, 0.28 ) );
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    mv = mult( mv, rotateZ(-rotYear));
+   
 
-    // then the back
-    mv1 = mult(mv, translate(0.0, 0.03, 0.13)); 
-    mv1 = mult(mv1, scalem(0.76, 0.96, 0.02));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    mv = mult( mv, scalem( 0.8, 0.2, 0.2 ) );
 
-    //then the top
-    mv1 = mult(mv, translate(0.0, 0.52, 0.0)); 
-    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
-
-    // then the upper drawer
-    mv1 = mult(mv, translate(0.0, 0.20, 0.0)); 
-    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
-
-    
-    // then the lower drawer
-    mv1 = mult(mv, translate(0.0, -0.10, 0.0)); 
-    mv1 = mult(mv1, scalem(0.76, 0.02, 0.28));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
-
-    // then the floor box
-    mv1 = mult(mv, translate(0.0, -0.475, 0.0)); 
-    mv1 = mult(mv1, scalem(0.76, 0.11, 0.28));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
-
 
     requestAnimFrame( render );
 }
-
