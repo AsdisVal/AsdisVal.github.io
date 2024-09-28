@@ -15,9 +15,19 @@ var spinY = 0;
 var origX;
 var origY;
 
-var rotYear = 0.0;
-var rotDay = 0.0;
+var clockRotation = -1;
+var numbersInClock = 12;
 
+
+// speed for each arm
+var hourSpeed = (30/3600) * clockRotation;
+var minuteSpeed = (6/60) * clockRotation;
+var secondSpeed = 6 * clockRotation;
+
+// angle for each arm
+var hourAngle;
+var minuteAngle;
+var secondAngle;
 
 var matrixLoc;
 
@@ -58,7 +68,7 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    matrixLoc = gl.getUniformLocation( program, "rotation" );
+    matrixLoc = gl.getUniformLocation( program, "transform" );
 
     //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
@@ -81,12 +91,23 @@ window.onload = function init()
         }
     } );
 
+    var time = new Date();
+    var currentHour = time.getHours() % numbersInClock; 
+    var currentMinute = time.getMinutes();
+    var currentSecond = time.getSeconds();
+
+    var circleInDegrees = 360;
+
+    hourAngle = circleInDegrees - 30 * (currentHour + (currentMinute / 60));
+    minuteAngle = circleInDegrees - currentMinute * 6;
+    secondAngle = circleInDegrees  - currentSecond * 6;
+
     render();
 }
 
 function colorCube()
 {
-    quad( 1, 0, 3, 2 );
+    quad( 1, 0, 3, 2 ); // forms a face of the cube(using two triangles)
     quad( 2, 3, 7, 6 );
     quad( 3, 0, 4, 7 );
     quad( 6, 5, 1, 2 );
@@ -138,23 +159,48 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    rotDay += 10.0;
-    rotYear += 0.5;        // not the correct value, but looks better!
+    var modelView = mat4();
+    modelView = mult( modelView, rotateX(spinX) );
+    modelView = mult( modelView, rotateY(spinY) );
 
-    var mv = mat4();
-    mv = mult( mv, rotateX(spinX) );
-    mv = mult( mv, rotateY(spinY) );
+    hourAngle += hourSpeed / 60;
+    minuteAngle += minuteSpeed / 60;
+    secondAngle += secondSpeed / 60;
 
-    // teikna klukkustundaarminn
-    mv = mult( mv, scalem( 0.3, 0.3, 0.3 ) );
+    var armLength = 0.35;
+    var startingPosInAClock = 90; // 90 degrees up is always the starting point.
 
-    
-    mv = mult( mv, rotateZ(-rotYear));
-   
+    //back for the clock
+    modelView = mult(modelView, translate( 0, 0, 0 ) );
+    var mvBack = mult(modelView, translate( 0, 0, 0.3 ) ); 
+    mvBack = mult(mvBack, scalem(0.8, 0.8, 0.03 ) );
+    mvBack = mult(mvBack, rotateY(90));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten( mvBack ) );
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
-    mv = mult( mv, scalem( 0.8, 0.2, 0.2 ) );
+    //Arm for hours
+    modelView = mult( modelView, rotateZ(hourAngle + startingPosInAClock)); 
+    var mv1 = mult( modelView, translate(armLength/2, 0, 0));
+    mv1 = mult( mv1, scalem( armLength, 0.04, 0.02 ) );
+    gl.uniformMatrix4fv( matrixLoc, false, flatten( mv1 ) );
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv));
+    //Arm for minutes
+    modelView = mult( modelView, translate( armLength, 0, -0.02 ) );
+    modelView = mult( modelView, rotateZ( minuteAngle - hourAngle ) );
+    var mv2 = mult( modelView, translate(armLength / 2 , 0, 0) );
+    mv2 = mult( mv2, scalem( armLength, 0.03, 0.02 ) );
+    mv2 = mult( mv2, rotateY( 180 ) );
+    gl.uniformMatrix4fv( matrixLoc, false, flatten(mv2));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+    //Arm for seconds
+    modelView = mult( modelView, translate( armLength, 0, -0.02 ) );
+    modelView = mult( modelView, rotateZ( secondAngle - minuteAngle ) );
+    var mv3 = mult( modelView, translate( armLength / 2, 0, 0 ) );
+    mv3 = mult( mv3, scalem( armLength, 0.02, 0.01 ) );
+    mv3 = mult( mv3, rotateX( 90 ) );
+    gl.uniformMatrix4fv( matrixLoc, false, flatten( mv3 ) );
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     requestAnimFrame( render );
