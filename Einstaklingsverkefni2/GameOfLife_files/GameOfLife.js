@@ -15,6 +15,10 @@ var spinY = 0;
 var origX;
 var origY;
 
+var sScale = 1.0
+var locScale;
+
+
 
 
 var matrixLoc;
@@ -30,7 +34,7 @@ window.onload = function init()
     colorCube();
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.9, 1.0, 1.0, 1.0 );
+    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -56,6 +60,9 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
+    locScale = gl.getUniformLocation(program, "Scale");
+    gl.uniform1f(locScale, sScale);
+
     matrixLoc = gl.getUniformLocation( program, "rotation" );
 
     //event listeners for mouse
@@ -78,6 +85,17 @@ window.onload = function init()
             origY = e.offsetY;
         }
     } );
+
+    // Event listener for mousewheel
+    window.addEventListener("wheel", function(e){
+        if( e.deltaY > 0.0 ) {
+            sScale *= 1.04;
+        } else {
+            sScale /= 1.04;
+        }
+        gl.uniform4f(locScale, sScale);
+
+    }  );  
 
     render();
 }
@@ -107,10 +125,10 @@ function quad(a, b, c, d)
 
     var vertexColors = [
         [ 0.0, 0.0, 0.0, 1.0 ],  // black
-        [ 1.0, 0.0, 0.0, 1.0 ],  // red
         [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
         [ 0.0, 1.0, 0.0, 1.0 ],  // green
         [ 0.0, 0.0, 1.0, 1.0 ],  // blue
+        [ 1.0, 0.0, 0.0, 1.0 ],  // red
         [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
         [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
         [ 1.0, 1.0, 1.0, 1.0 ]   // white

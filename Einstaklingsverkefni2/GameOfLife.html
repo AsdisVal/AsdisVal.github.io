@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script id="vertex-shader" type="x-shader/x-vertex">
-        attribute  vec4 vPosition;
-        attribute  vec4 vColor;
-        varying vec4 fColor;
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Game of Life</title>
 
-        uniform mat4 rotation;
-
-        void main()
-        {
-            fColor = vColor;
-            gl_Position = rotation * vPosition;
-        }
-    </script>
+<script id="vertex-shader" type="x-shader/x-vertex">
+    attribute  vec4 vPosition;
+    attribute  vec4 vColor;
+    varying vec4 fColor;
+    uniform vec4 transform;
+    
+    void main() {
+    fColor = vColor;
+    gl_Position = transform * vPosition;
+    }
+</script>
     
 <script id="fragment-shader" type="x-shader/x-fragment">
 
     precision mediump float;
-    
     varying vec4 fColor;
     
     void main()
@@ -34,13 +31,13 @@
 <script type="text/javascript" src="./GameOfLife_files/webgl-utils.js"></script>
 <script type="text/javascript" src="./GameOfLife_files/initShaders.js"></script>
 <script type="text/javascript" src="./GameOfLife_files/MV.js"></script>
-<script type="text/javascript" src="/GameOfLife.js"></script>
-
-    
+<script type="text/javascript" src="./GameOfLife_files/GameOfLife.js"></script>    
 </head>
+<header>
+    <h1>Game of Life</h1>
+</header>
 
 <body>
-    <canvas id="gl-canvas" width="700" "="" height="700">
-    
+    <canvas id="gl-canvas" width="512" height="512">
 </body>
 </html>
