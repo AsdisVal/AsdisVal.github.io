@@ -8,6 +8,8 @@ var numVertices  = 36;
 
 var points = [];
 var colors = [];
+var grid = [];
+var gridSize = 10;
 
 var movement = false;     // Do we rotate?
 var spinX = 0;
@@ -15,10 +17,16 @@ var spinY = 0;
 var origX;
 var origY;
 
-var sScale = 1.0
-var locScale;
+var xAxis = 0;
+var yAxis = 1;
+var zAxis = 2;
 
+var axis = 0;
+var theta = [ 0, 0, 0 ];
 
+var sScale = 1.0;
+
+var camera;
 
 
 var matrixLoc;
@@ -44,7 +52,7 @@ window.onload = function init()
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
-    var cBuffer = gl.createBuffer();
+    var cBuffer = gl.createBuffer(); //color buffer
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW );
 
@@ -52,7 +60,7 @@ window.onload = function init()
     gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vColor );
 
-    var vBuffer = gl.createBuffer();
+    var vBuffer = gl.createBuffer(); //vertex buffer
     gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW );
 
@@ -63,7 +71,7 @@ window.onload = function init()
     locScale = gl.getUniformLocation(program, "Scale");
     gl.uniform1f(locScale, sScale);
 
-    matrixLoc = gl.getUniformLocation( program, "rotation" );
+    matrixLoc = gl.getUniformLocation( program, "transform" );
 
     //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
@@ -84,19 +92,9 @@ window.onload = function init()
             origX = e.offsetX;
             origY = e.offsetY;
         }
-    } );
+    } ); 
 
-    // Event listener for mousewheel
-    window.addEventListener("wheel", function(e){
-        if( e.deltaY > 0.0 ) {
-            sScale *= 1.04;
-        } else {
-            sScale /= 1.04;
-        }
-        gl.uniform4f(locScale, sScale);
-
-    }  );  
-
+    createGrid(gridSize);
     render();
 }
 
@@ -133,12 +131,6 @@ function quad(a, b, c, d)
         [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
         [ 1.0, 1.0, 1.0, 1.0 ]   // white
     ];
-
-    // We need to parition the quad into two triangles in order for
-    // WebGL to be able to render it.  In this case, we create two
-    // triangles from the quad indices
-    
-    //vertex color assigned by the index of the vertex
     
     var indices = [ a, b, c, a, c, d ];
 
@@ -149,20 +141,77 @@ function quad(a, b, c, d)
     }
 }
 
+function createGrid(gridSize) {
+    
+    for(let x = 0; x < gridSize; x++) {
+        grid[x] = [];
+        for(let y = 0; y < gridSize; y++) {
+            grid[x][y] = [];
+            for(let z = 0; z < gridSize; z++) {
+                grid[x][y][z] = 1;
+                /*
+                let aliveOrdead = Math.random();
+                if(aliveOrdead > 0.7) {
+                    grid[x][y][z] = 1;
+                    renderGrid(grid);
+                } 
+                else {grid[x][y][z] = 0;}*/
+
+            }
+        }
+    }
+    return grid;
+}
+
+// Rendering alive cells
+
+function renderGrid(grid) {
+    for(let x = 0; x < gridSize; x++) {
+        for(let y = 0; y < gridSize; y++) {
+            for(let z = 0; z < gridSize; z++) {
+                if(grid[x][y][z] = 1) {
+                    drawCubeAtPosition(x, y, z);
+                }
+            }
+        }
+    }
+}
+
+
+function drawCubeAtPosition(x, y, z) {
+    let mv = mat4();
+    mv = mult(mv, translate(x - gridSize/2, y - gridSize/2, z - gridSize/2));
+    mv = mult(mv, scale(sScale, sScale, sScale));
+
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv));
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+}
+
+
+function extraGrid(grid) {
+    let extraGrid = [];
+    for(let x = 0; x < gridSize; x++) {
+        extraGrid[x] = [];
+        for( let y = 0; y < gridSize; y++) {
+            extraGrid[x][y] = [];
+            for(let z = 0; z < gridSize; z++) {
+                extraGrid[x][y][z] = grid[x][y][z]
+            }
+        }
+    }
+    return extraGrid;
+}
 
 function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-
     var mv = mat4();
     mv = mult( mv, rotateX(spinX) );
     mv = mult( mv, rotateY(spinY) );
-
-    mv = mult( mv, scalem( 0.5, 0.5, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv));
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
+    renderGrid(grid);
     requestAnimFrame( render );
+
 }
 
