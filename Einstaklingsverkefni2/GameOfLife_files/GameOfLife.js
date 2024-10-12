@@ -68,7 +68,7 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    locScale = gl.getUniformLocation(program, "Scale");
+    let locScale = gl.getUniformLocation(program, "Scale");
     gl.uniform1f(locScale, sScale);
 
     matrixLoc = gl.getUniformLocation( program, "transform" );
@@ -142,7 +142,6 @@ function quad(a, b, c, d)
 }
 
 function createGrid(gridSize) {
-    
     for(let x = 0; x < gridSize; x++) {
         grid[x] = [];
         for(let y = 0; y < gridSize; y++) {
@@ -169,7 +168,7 @@ function renderGrid(grid) {
     for(let x = 0; x < gridSize; x++) {
         for(let y = 0; y < gridSize; y++) {
             for(let z = 0; z < gridSize; z++) {
-                if(grid[x][y][z] = 1) {
+                if(grid[x][y][z] == 1) {
                     drawCubeAtPosition(x, y, z);
                 }
             }
@@ -187,7 +186,7 @@ function drawCubeAtPosition(x, y, z) {
     gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
-
+/*
 function extraGrid(grid) {
     let extraGrid = [];
     for(let x = 0; x < gridSize; x++) {
@@ -201,6 +200,7 @@ function extraGrid(grid) {
     }
     return extraGrid;
 }
+*/
 
 function render()
 {
