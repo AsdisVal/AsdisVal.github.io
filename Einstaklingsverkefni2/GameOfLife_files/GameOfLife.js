@@ -264,13 +264,14 @@ function drawAnimatedCube(x, y, z, globalTransformMatrix, scale, rotation)
 //Handle the animation timing
 function handleAnimationTiming(currentTime, lastUpdateTime, animationLength, updateInterval) 
 {
-    if(currentTime - lastUpdateTime > updateInterval)  {
+    const timeElapsed = currentTime - lastUpdateTime;
+
+    if(timeElapsed > updateInterval)  {
         updateGrid();
     }
 
-    if( currentTime - lastUpdateTime < animationLength) {
-        var elapsed = (currentTime - lastUpdateTime) % animationLength;
-        var progress = elapsed / animationLength;
+    if( timeElapsed < animationLength) {
+        var progress = (timeElapsed % animationLength) / animationLength;
         var rotation = progress * fullRotation;
         return {animate: true, progress, rotation};
     }
