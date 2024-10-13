@@ -27,11 +27,13 @@
     }
     </script>
 
-    
+
+<link rel="stylesheet" type="text/css" href="style.css">
 <script type="text/javascript" src="./GameOfLife_files/webgl-utils.js"></script>
 <script type="text/javascript" src="./GameOfLife_files/initShaders.js"></script>
 <script type="text/javascript" src="./GameOfLife_files/MV.js"></script>
-<script type="text/javascript" src="./GameOfLife_files/GameOfLife.js"></script>    
+<script type="text/javascript" src="./GameOfLife_files/GameOfLife.js"></script> 
+   
 </head>
 <header>
     <h1>Game of Life</h1>
@@ -39,5 +41,8 @@
 
 <body>
     <canvas id="gl-canvas" width="512" height="512"></canvas>
+    <div>
+        <button id="button" onclick="window.location.reload();"> Try another life</button>
+    </div>
 </body>
 </html>
