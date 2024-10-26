@@ -1,0 +1,100 @@
+
+<html lang="is" class="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Heimadæmi 6</title>
+    <meta name="description" content="Heimadæmi 2, þetta er fyrir Tölvugrafík.">
+    <meta property="og:title" content="Tölvugrafík">
+    
+    <meta property="og:image" content="">
+    <link href="styles.css" rel="stylesheet"/>
+
+  </head>
+
+  
+    <body>
+    <div class="Container">
+        <header>
+            <h1>Tölvugrafík - Heimadæmi 5</h1>
+            <p>Nemandi: Ásdís Valtýsdóttir</p>
+        </header>
+
+        <section class="assignment">
+            <h2>Skiladæmi 1</h2>
+             <a href="viewpoints-hus+.html">hér er dæmi eitt.</a>
+             <p><strong>a-liður:</strong> Hér áttum við að endurbæta forrit með því að búa til nýtt sjónarhorn. Nýja sjónarhornið er ný staðsetning á auganu, sem er ofan á húsi í hnitum (-40, 140)
+                og það er alltaf fylgst með bílnum. Svipað og sjónarhorn 2 og 3 nema nú er staðsetning augans í (-14, 140, 16+height). Upphafsgildi z-hnits þarf að vera hærra 
+                en venjulega því annars værum við inni í húsinu. 
+             </p>
+             <p><strong>b-liður:</strong>Hér áttum við að leyfa notandanum að snúali kaninu á meðann hann er í snjónarhorni 1. Núna þýðir færsla músar í x-átt (lárétt) að 
+            við snúum z-ás og færsla músar í y-átt þýður að við snýym um y-ás. Eins þarf snúningurinn að vera gerður eftr að búið er að kalla á lookAt fallið.</p>
+        </section>
+
+        <section class="assignment">
+            <h2>Skiladæmi 2</h2>
+             <a href="figureHH-run.html">hér er dæmi tvö.</a>
+             <p>
+                Í þessu dæmi átti maður að breyta forriti <strong>figureHH-col</strong> þannig að fígúran sé að hlaupa. Við breytum aðeins fjórum liðamótum: Efri handleggjum og 
+                efri fótleggjum (leftUpperArm, rightUpperArm, leftUpperLeg og rightUpperLeg).  Útlimirnir eiga að sveiflast í takt, vinstri og hægri á móti hver öðrum og 
+                fætur og hendur í öfugum takti. 
+                Í forritinu er sínusfallið notað til þess að fá útlimina til að sveiflast fram og til baka. Athugið að það þarf að kalla á fallið initNodes eftir hverja breytingu á liðamótum. 
+                Það sem ég breytti í kóðanum var render fallið: 
+             </p>
+             <img src="daemi2.png" width="600" height="600" alt="dæmi 1.">
+        </section>
+
+        <section class="assignment">
+            <h2>Skiladæmi 3</h2>
+
+
+            <p>[Próf 2021] Hér fyrir neðan er líkan með yfirborði, áhorfanda (efst til vinstri) og hvítum
+                ljósgjafa (efst til hægri). Yfirborðið er litað með lýsingarlíkani Phong, með nokkuð háu
+                gildi á glansstuðlinum α.
+                <strong>Liður a:</strong>
+                Útskýrið hvar bjartasta dreifendurskinið (diffuse) verður á þessu yfirborði. En hvar
+                er bjartasta depilendurskinið (specular)? Rökstyðjið svar ykkar í báðum tilvikum.
+            </p>
+            <img src="d3.png" width="800" height="400" alt="dæmi 1.">
+            <p><strong>Lausn a: </strong>
+            Bjartasta dreifendurskinið er beint fyrir neðan ljósgjafann. Það hámarkar <strong>l dot n</strong> og þar eru <strong>l</strong> og <strong>n</strong>
+         sami vigurinn og gildi punktfeldisins er 1 (ef l og n eru einingarvigrar).</p>
+         <p>Bjartasta depilendurskinið er þar sem <strong>r dot v</strong> eru í hámarki, eða þar sem <strong>r = v</strong> og það er um það bil 
+         í botni skálarinnar, sjá mynd að neðan. Athugið að það skiptir ekki máli ef barmar skálarinnar séu fyrir ljósgjafanum  eða auganu. Þegar liturinn er ákveðinn 
+         er bara spáð í stefnu í ljósgjafa og stefnu í áhorfanda. </p>
+
+         <p><strong>Liður b: </strong>
+        Útskýrið sérstaklega litunina á punktunum A, B og C á yfirborðinu. Takið fyrir einstaka þætti (umhverfis-, dreif-, og depilendurskin) og rökstyðjið litunina út frá
+        staðsetningu áhorfandans og ljósgjafans. 
+        </p>
+         <p><strong>Lausn b:</strong> Punktar A, B, og C: Litur umhverfisendurskins er það sama í öllum puunktunum, svo við skoðum aðeins dreif og depilendurskin.</p>
+         <p>Punktur A hefur frekar hátt depilendurskin, því þvervigur hans er nokkuð svipaður og <strong>l</strong> vigurinn þar. Depilendurskinið er hins vegar næt ekkert, því <strong>r</strong> er er mjög langt frá <strong>v</strong>.</p>
+         <p>Punktur B hefur ekkert dreifendurskin því þvervigurinn er langt frá ljósvigrinum <strong>l</strong>. Sömuleiðis er depilendurskinið ekkert því r og v eru langt frá hver öðrum. B hefur því aðeins umhverfisendurskin.</p>
+        <p>Punkturinn C hefur mikið dreifiendurskin, en nær ekkert depilendurskin. Hann hefur því svipaðar lýsingu og A. </p>
+        </section>
+
+        <section class="assignment">
+            <h2>Skiladæmi 4</h2>
+            <p>Fullyrðingar um endurskinslíkan Phong:</p>
+            <p> <strong> a. það er hægt að reikna dreifendurskin án þess að vita staðsetningu áhorfanda.</strong> Lausn: Formúlan fyrir dreifendurskin notar aðeins vigrana <strong>l og n</strong>, og þeir eru óháðir áhorfanda. 
+            Vigurinng <strong>l</strong> tengist staðsetningu (eða stefnu) ljósgjafa og <strong>n</strong> er þvervigur yfirborðsins í punktinum. Þessi fullyrðing er því <strong>sönn.</strong></p>
+
+            <p><strong>b. umhverfisendurskin er notað til að líkja eftir því að það séu margir ljósgjafar</strong> Lausn: umhverfisendurskin er notað til þess að líkja eftir óbeinni lýsingu, ekki mörgum ljósgjöfum. Þessi fullyrðing er <strong>ósönn</strong>.</p>
+            <p><strong>c. Fjarlægð áhorfanda frá yfirborði hlutar hefur áhrif á lit hlutarins samkvæmt endurskinslíkai Phongs.</strong> Lausn: Fjarlægð áhorfanda frá yfirborðinu hefur engin áhrif í endurskinslíkani Phongs. Líkanið inniheldur aðeins stefnuna í áhorfandann. Fjarlægð ljósgjafa getur haft áhrif, ef við notum dofnun, en fjarlægð áhorfanda kemur hvergi fram í formúlunni. fullyrðingin er því <strong>ósönn</strong>.</p> 
+            <p><strong>d. Til að fá raunverulegustu mynd af líkaninu þá ætti litur umhverfisendurskinsins að vera sá sami og litur depilendurskinsins. </strong> Laus: Litur depilendurskinsins er settur sem liturinn á ljósgjafanum, því depillinn á að vera speglun ljósgjafans í hlutnum. Við viljum því ekki endilega hafa umhverfisendurskin þannig á litinn. Það er rökréttara að hafa lit umhverfisendurskinsins sem daufa útgáfu af lit dreifiendurskinsins, því það er hinn sýnilegi litur hlutarins. Fullyrðingin er því <strong>ósönn</strong>.</p>
+        </section>
+
+        <section class="assignment">
+            <h2>Skiladæmi 5</h2>
+            <p>[Próf 2018] Á myndinni hér fyrir neðan er gefin lína á milli tveggja punkta v1 og v2, sem hafa sitthvorn þvervigurinn n1 og n2. Ljósgjafinn er fyrir ofan miðja línuna.</p>
+            <img src="d5.png" width="800" height="400" alt="dæmi 1.">
+            <p>Lýsa á línuna með dreifendurskini eingöngu, það er ekkert umhverfisendurskin eða depilendurskin. Fyrir litunaraðferðirnar þrjár: i) flata litun, ii) Gouraud litun og iii) Phong litun, rissið upp, og lýsið í orðum, hvernig línan mun vera á litinn (bara gráskala litur) og hvar bjartasti punkturinn á henni er.</p>
+
+        </section>
+
+        <footer>
+            <a class="back-link" href="../index.html">Til baka á heimasíðuna</a>
+        </footer>
+    </div>
+    </body>
+  </html>
