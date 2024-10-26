@@ -41,49 +41,21 @@
 
         <section class="assignment">
             <h2>Skiladæmi 3</h2>
-
-
-            <p>[Próf 2021] Hér fyrir neðan er líkan með yfirborði, áhorfanda (efst til vinstri) og hvítum
-                ljósgjafa (efst til hægri). Yfirborðið er litað með lýsingarlíkani Phong, með nokkuð háu
-                gildi á glansstuðlinum α.
-                <strong>Liður a:</strong>
-                Útskýrið hvar bjartasta dreifendurskinið (diffuse) verður á þessu yfirborði. En hvar
-                er bjartasta depilendurskinið (specular)? Rökstyðjið svar ykkar í báðum tilvikum.
-            </p>
-            
-            <p><strong>Lausn a: </strong>
-            Bjartasta dreifendurskinið er beint fyrir neðan ljósgjafann. Það hámarkar <strong>l dot n</strong> og þar eru <strong>l</strong> og <strong>n</strong>
-         sami vigurinn og gildi punktfeldisins er 1 (ef l og n eru einingarvigrar).</p>
-         <p>Bjartasta depilendurskinið er þar sem <strong>r dot v</strong> eru í hámarki, eða þar sem <strong>r = v</strong> og það er um það bil 
-         í botni skálarinnar, sjá mynd að neðan. Athugið að það skiptir ekki máli ef barmar skálarinnar séu fyrir ljósgjafanum  eða auganu. Þegar liturinn er ákveðinn 
-         er bara spáð í stefnu í ljósgjafa og stefnu í áhorfanda. </p>
-
-         <p><strong>Liður b: </strong>
-        Útskýrið sérstaklega litunina á punktunum A, B og C á yfirborðinu. Takið fyrir einstaka þætti (umhverfis-, dreif-, og depilendurskin) og rökstyðjið litunina út frá
-        staðsetningu áhorfandans og ljósgjafans. 
-        </p>
-         <p><strong>Lausn b:</strong> Punktar A, B, og C: Litur umhverfisendurskins er það sama í öllum puunktunum, svo við skoðum aðeins dreif og depilendurskin.</p>
-         <p>Punktur A hefur frekar hátt depilendurskin, því þvervigur hans er nokkuð svipaður og <strong>l</strong> vigurinn þar. Depilendurskinið er hins vegar næt ekkert, því <strong>r</strong> er er mjög langt frá <strong>v</strong>.</p>
-         <p>Punktur B hefur ekkert dreifendurskin því þvervigurinn er langt frá ljósvigrinum <strong>l</strong>. Sömuleiðis er depilendurskinið ekkert því r og v eru langt frá hver öðrum. B hefur því aðeins umhverfisendurskin.</p>
-        <p>Punkturinn C hefur mikið dreifiendurskin, en nær ekkert depilendurskin. Hann hefur því svipaðar lýsingu og A. </p>
+            <p>Í þessu dæmi átti maður að breyta forriti <strong>TransparentTepottur</strong> þannig að þegar notandinn ýtir á niður-örina þá stækkar yfirborð tepottsins sem verður gegnsætt. Þegar ýtt er á upp-örina þá minnkar yfirborðið. Talan var aðeins á bilinu 0.0 til 4.0 en ég tel að það hefði átt að vera með minna bil af því tepotturinn var nú þegar algegnsær áður en maður kom að 0.0. </p>
+            <img src="/myndir/3a.png" width="353" height="119" alt="hér er dæmi 3a">
+            <img src="/myndir/3aa.png"width="350" height="97" alt="hér er dæmi 3a aftur">
+            <p></p>
+            <a href="TransparentTepottur.html">hér er dæmi þrjú.</a>
         </section>
 
         <section class="assignment">
             <h2>Skiladæmi 4</h2>
-            <p>Fullyrðingar um endurskinslíkan Phong:</p>
-            <p> <strong> a. það er hægt að reikna dreifendurskin án þess að vita staðsetningu áhorfanda.</strong> Lausn: Formúlan fyrir dreifendurskin notar aðeins vigrana <strong>l og n</strong>, og þeir eru óháðir áhorfanda. 
-            Vigurinng <strong>l</strong> tengist staðsetningu (eða stefnu) ljósgjafa og <strong>n</strong> er þvervigur yfirborðsins í punktinum. Þessi fullyrðing er því <strong>sönn.</strong></p>
-
-            <p><strong>b. umhverfisendurskin er notað til að líkja eftir því að það séu margir ljósgjafar</strong> Lausn: umhverfisendurskin er notað til þess að líkja eftir óbeinni lýsingu, ekki mörgum ljósgjöfum. Þessi fullyrðing er <strong>ósönn</strong>.</p>
-            <p><strong>c. Fjarlægð áhorfanda frá yfirborði hlutar hefur áhrif á lit hlutarins samkvæmt endurskinslíkai Phongs.</strong> Lausn: Fjarlægð áhorfanda frá yfirborðinu hefur engin áhrif í endurskinslíkani Phongs. Líkanið inniheldur aðeins stefnuna í áhorfandann. Fjarlægð ljósgjafa getur haft áhrif, ef við notum dofnun, en fjarlægð áhorfanda kemur hvergi fram í formúlunni. fullyrðingin er því <strong>ósönn</strong>.</p> 
-            <p><strong>d. Til að fá raunverulegustu mynd af líkaninu þá ætti litur umhverfisendurskinsins að vera sá sami og litur depilendurskinsins. </strong> Laus: Litur depilendurskinsins er settur sem liturinn á ljósgjafanum, því depillinn á að vera speglun ljósgjafans í hlutnum. Við viljum því ekki endilega hafa umhverfisendurskin þannig á litinn. Það er rökréttara að hafa lit umhverfisendurskinsins sem daufa útgáfu af lit dreifiendurskinsins, því það er hinn sýnilegi litur hlutarins. Fullyrðingin er því <strong>ósönn</strong>.</p>
+            <p></p>
         </section>
 
         <section class="assignment">
             <h2>Skiladæmi 5</h2>
-            <p>[Próf 2018] Á myndinni hér fyrir neðan er gefin lína á milli tveggja punkta v1 og v2, sem hafa sitthvorn þvervigurinn n1 og n2. Ljósgjafinn er fyrir ofan miðja línuna.</p>
-           
-            <p>Lýsa á línuna með dreifendurskini eingöngu, það er ekkert umhverfisendurskin eða depilendurskin. Fyrir litunaraðferðirnar þrjár: i) flata litun, ii) Gouraud litun og iii) Phong litun, rissið upp, og lýsið í orðum, hvernig línan mun vera á litinn (bara gráskala litur) og hvar bjartasti punkturinn á henni er.</p>
+            <p></p>
 
         </section>
 
