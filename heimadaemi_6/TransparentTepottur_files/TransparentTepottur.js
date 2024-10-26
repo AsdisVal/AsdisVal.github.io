@@ -1,9 +1,5 @@
 /////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Tepottur sem litaður er með Phong litun.  Hægt að snúa
-//     honum með músinni og þysja með músarhjóli
-//
-//    Hjálmtýr Hafsteinsson, október 2024
+//    Ásdís Valtýsdóttir, október 2024
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
@@ -20,9 +16,14 @@ var origX;
 var origY;
 
 var zDist = -4.0;
+var program;
 
 //transparency threshold value
 var transparencyThreshold = 1.8;
+var hue = 0;
+var hueRight = (hue + 5) % 360;
+var hueLeft = (hue - 5 + 360) % 360;
+
 
 var fovy = 60.0;
 var near = 0.2;
@@ -53,6 +54,7 @@ var eye;
 var at = vec3(0.0, 0.0, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
 
+
 window.onload = function init() {
 
     canvas = document.getElementById( "gl-canvas" );
@@ -76,14 +78,12 @@ window.onload = function init() {
     points = myTeapot.TriangleVertices;
     normals = myTeapot.Normals;
 
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-
 
     ambientProduct = mult(lightAmbient, materialAmbient);
     diffuseProduct = mult(lightDiffuse, materialDiffuse);
     specularProduct = mult(lightSpecular, materialSpecular);
-
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer);
@@ -119,18 +119,18 @@ window.onload = function init() {
     gl.uniform1f(transparencyThresholdLoc, transparencyThreshold); //set initial value
     
     //event listeners for mouse
-    canvas.addEventListener("mousedown", function(e){
+    canvas?.addEventListener("mousedown", function(e){
         movement = true;
         origX = e.clientX;
         origY = e.clientY;
         e.preventDefault();         // Disable drag and drop
     } );
 
-    canvas.addEventListener("mouseup", function(e){
+    canvas?.addEventListener("mouseup", function(e){
         movement = false;
     } );
 
-    canvas.addEventListener("mousemove", function(e){
+    canvas?.addEventListener("mousemove", function(e){
         if(movement) {
     	    spinY = ( spinY + (origX - e.clientX) ) % 360;
             spinX = ( spinX + (origY - e.clientY) ) % 360;
@@ -140,37 +140,61 @@ window.onload = function init() {
     } );
 
     // Event listener for mousewheel
-     window.addEventListener("wheel", function(e){
+    window.addEventListener("wheel", function(e){
          if( e.deltaY > 0.0 ) {
              zDist += 0.2;
          } else {
              zDist -= 0.2;
          }
-     }  );
+    }  );
+    
+    window.addEventListener("keydown", function(e) {
+        const adjustTransparency = (delta) => {
+            transparencyThreshold = Math.min(Math.max(transparencyThreshold + delta, 0.0), 4.0);
+            applyTransparencyThreshold();
+        };
 
+        const adjustHue = (delta) => {
+            hue = (hue + delta + 360) % 360;
+            applyDiffuseColor(hue);
+        };
 
-     window.addEventListener("keydown", function(e) {
-        if(e.key === "ArrowDown") {
-            //more area transparent
-            transparencyThreshold -=0.1;
-            transparencyThreshold = Math.max(0.0, transparencyThreshold);
-            gl.uniform1f(transparencyThresholdLoc, transparencyThreshold); // update the shader
-            render();
-            console.log(transparencyThreshold);
+        switch(e.key) {
+            case "ArrowUp":
+                adjustTransparency(0.1);
+                break;
+            case "ArrowDown":
+                adjustTransparency(-0.1);
+                break;
+            case "ArrowLeft":
+                adjustHue(-5);
+                break;
+            case "ArrowRight":
+                adjustHue(5);
+                break;
         }
-     });
+        e.preventDefault();
+    });
 
-     window.addEventListener("keyup", function(e) {
-        if(e.key === "ArrowUp") {
-             //less area transparent
-            transparencyThreshold +=0.1;
-            transparencyThreshold = Math.min(4.0, transparencyThreshold);
-            gl.uniform1f(transparencyThresholdLoc, transparencyThreshold);
-            render();
-            console.log(transparencyThreshold);
-        }
-     });
+    applyDiffuseColor(hue);
+    applyTransparencyThreshold();
+    
     render();
+}
+
+function applyTransparencyThreshold() {
+    gl.uniform1f(transparencyThresholdLoc, transparencyThreshold);
+}
+
+function applyDiffuseColor(hue) {
+    const [r, g, b] = convertHSVtoRGB(hue, 1.0, 1.0);
+    const newDiffuseColor = vec4(r, g, b, 1.0);
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(newDiffuseColor));
+}
+
+function convertHSVtoRGB(h, s, v) {
+    const calculateComponent = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+    return [calculateComponent(5), calculateComponent(3), calculateComponent(1)];
 }
 
 

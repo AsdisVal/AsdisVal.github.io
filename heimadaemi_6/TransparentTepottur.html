@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0070)https://hjalmtyr.github.io/WebGL-forrit/Angel/TransparentTepottur.html -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <script id="vertex-shader" type="x-shader/x-vertex">
@@ -17,9 +16,12 @@ void main()
     vec3 pos = (modelViewMatrix * vPosition).xyz;
 
     // check for directional light
-    if(lightPosition.w == 0.0) L = normalize(lightPosition.xyz);
-    else L = normalize( lightPosition.xyz - pos );
-
+    if(lightPosition.w == 0.0) {
+        L = normalize(lightPosition.xyz);
+    } else {
+        L = normalize( lightPosition.xyz - pos );
+    }
+    
     E =  -normalize(pos);
     N = normalize( normalMatrix*vNormal.xyz);
 
@@ -36,9 +38,12 @@ uniform vec4 ambientProduct;
 uniform vec4 diffuseProduct;
 uniform vec4 specularProduct;
 uniform float shininess;
+uniform float transparencyThreshold; 
+
+
 varying vec3 N, L, E;
 
-uniform float transparencyThreshold; // for up and down keys
+
 
 void main()
 {
@@ -52,13 +57,10 @@ void main()
 
     if( dot(L, N) < 0.0 ) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-
-//  Throw away if too bright:
     vec4 color = ambient + diffuse + specular;
     color.a = 1.0;
 
-    // Discard fragments if color brightness exceeds the transparency transparencyThreshold
-    if( length(color) > transparencyThreshold)
+    if( length(color.rgb) > transparencyThreshold)
         discard;
     else
         gl_FragColor = color;
