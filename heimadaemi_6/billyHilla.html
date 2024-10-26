@@ -1,0 +1,42 @@
+
+<!-- saved from url=(0143)file:///C:/Users/Lenovo/Documents/H%C3%8D/sk%C3%B3la%C3%A1r_4/T%C3%B6lvugraf%C3%ADk/tolvugrafik/AsdisVal.github.io/heimadaemi_4/billyHilla.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+varying vec4 fColor;
+
+uniform mat4 transform;
+
+void main() 
+{
+    fColor = vColor;
+    gl_Position = transform * vPosition;
+} 
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+   
+varying vec4 fColor;
+
+void main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="./billyHilla_files/webgl-utils.js"></script>
+<script type="text/javascript" src="./billyHilla_files/initShaders.js"></script>
+<script type="text/javascript" src="./billyHilla_files/MV.js"></script>
+<script type="text/javascript" src="./billyHilla_files/billyHilla.js"></script>
+
+</head><body>
+<canvas id="gl-canvas" width="512" "="" height="512">
+   
+<br>
+
+
+
+</canvas></body></html>
