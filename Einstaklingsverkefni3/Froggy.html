@@ -64,8 +64,7 @@
 			const geometry = new THREE.BoxGeometry();
 			const material = new THREE.MeshPhongMaterial( { color: 0x44aa88 } );
 			const cube = new THREE.Mesh( geometry, material );
-      cube.position.z += 6;
-      //cube.position.x += 1;
+      cube.position.set(0, 0.02, 6);
 			scene.add( cube );
       
       // Búa til kúlu með Phong áferð og bæta í sviðsnetið
@@ -83,7 +82,51 @@
       plane.position.set(0, -0.5, 0);
       scene.add( plane );
 
-      // Búa til 
+      // Búa til upphafs gangstétt
+      const startingRoadGeometry = new THREE.PlaneGeometry(14, 1);
+      const startingRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const startingRoad = new THREE.Mesh( startingRoadGeometry, startingRoadMaterial );
+      startingRoad.rotation.x = -0.5 * Math.PI;
+      startingRoad.position.set(0, -0.48, 6);
+      scene.add( startingRoad );
+
+      // Búa til milli-gangstétt
+      const middleRoadGeometry = new THREE.PlaneGeometry(14, 1);
+      const middleRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const middleRoad = new THREE.Mesh( middleRoadGeometry, middleRoadMaterial );
+      middleRoad.rotation.x = -0.5 * Math.PI;
+      middleRoad.position.set(0, -0.48, 0);
+      scene.add( middleRoad );
+
+      // Búa til seinustu gangstéttina
+      const finalRoadGeometry = new THREE.PlaneGeometry(14, 1);
+      const finalRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const finalRoad = new THREE.Mesh( finalRoadGeometry, finalRoadMaterial );
+      finalRoad.rotation.x = -0.5 * Math.PI;
+      finalRoad.position.set(0, -0.48, -6);
+      scene.add( finalRoad );
+
+      // Búa til gangbraut
+      const pavementGeometry = new THREE.PlaneGeometry(14, 5);
+      const pavementMaterial = new THREE.MeshPhongMaterial( { color: 0x524d50 }); // munstur seinna
+      const pavement = new THREE.Mesh( pavementGeometry, pavementMaterial );
+      pavement.rotation.x = -0.5 * Math.PI;
+      pavement.position.set(0, -0.48, 3);
+      scene.add( pavement );
+
+      // Búa til á
+      const riverGeometry = new THREE.PlaneGeometry(14, 5);
+      const riverMaterial = new THREE.MeshPhongMaterial( { color: 0x8fcdd9 }); // munstur seinna
+      const river = new THREE.Mesh( riverGeometry, riverMaterial );
+      river.rotation.x = -0.5 * Math.PI;
+      river.position.set(0, -0.49, -3);
+      scene.add( river );
+
+
+
+
+
+
       
       // Skilgreina ljósgjafa og bæta honum í sviðsnetið
       const light = new THREE.DirectionalLight(0xFFFFFF, 1);
