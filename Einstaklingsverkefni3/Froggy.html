@@ -52,7 +52,7 @@
       // Skilgreina birtingaraðferð með afbjögun (antialias)
 			const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 
-      // Búa til tening með Phong áferð (Phong material) og bæta í sviðsnetið
+      // Búa til frosk með Phong áferð (Phong material) og bæta í sviðsnetið
 			const geometry = new THREE.BoxGeometry();
 			const material = new THREE.MeshPhongMaterial( { color: 0x44aa88 } );
 			const frog = new THREE.Mesh( geometry, material );
@@ -119,6 +119,22 @@
         cars.push(car);
       }
 
+      // Árekstur á bíl og froski
+      function checkCarCollision() {
+        let collisionDetected = false;
+
+        cars.forEach(car => {
+          if(Math.abs(frog.position.x - car.position.x) < 1.5 &&
+            Math.abs(frog.position.z - car.position.z) < 1) {
+              collisionDetected = true;
+            }
+        });
+
+        if(collisionDetected) {
+          frog.position.set(0, 0.02, 6);
+        }
+      }
+
       // Búa til á
       const riverGeometry = new THREE.PlaneGeometry(14, 5);
       const riverMaterial = new THREE.MeshPhongMaterial( { color: 0x8fcdd9 }); // munstur seinna
@@ -127,7 +143,7 @@
       river.position.set(0, -0.49, -3);
       scene.add( river );
 
-      //Trumbauppsetning
+      //Trumba-uppsetning
       const planks = [];
       const plankPositions = [
         {x: 0, z: -1},
@@ -187,6 +203,16 @@
         });
         return onPlank;
       }
+
+      // froskur í áni
+      function checkFrogInRiver() {
+        const isInRiver = (frog.position.z >= -5.5 && frog.position.z <= -0.5);
+        const onPlank = checkFrogOnPlank();
+
+        if(isInRiver && !onPlank) {
+          frog.position.set(0, 0.02, 6);
+        }
+      }
       
       // Hreyfifall
 			const animate = function () {
@@ -212,6 +238,8 @@
         });
 
         checkFrogOnPlank();
+        checkCarCollision();
+        checkFrogInRiver();
 
         updateCameraPosition();
 				renderer.render( scene, camera );
