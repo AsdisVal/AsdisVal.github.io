@@ -12,7 +12,7 @@
     ///////////////////////////////////////////////////////////
     // Ásdís Valtýsdóttir, Haust 2024
     ///////////////////////////////////////////////////////////
-      
+    
     // Ná í striga
     const canvas = document.querySelector('#c');
 
@@ -49,10 +49,7 @@
         }
       }
       
-      // Þarf að uppfæra ofanvörpunarfylki ef stikar myndavélar breytast
-      function updateCamera() {
-        camera.updateProjectionMatrix();
-      }
+      
       
       // Bæta við músarstýringu
       const controls = new THREE.OrbitControls( camera, canvas );
@@ -66,6 +63,8 @@
 			const cube = new THREE.Mesh( geometry, material );
       cube.position.set(0, 0.02, 6);
 			scene.add( cube );
+
+      
       
       // Búa til kúlu með Phong áferð og bæta í sviðsnetið
 			const ballGeometry = new THREE.SphereGeometry( 0.5, 20, 20 );
@@ -122,23 +121,43 @@
       river.position.set(0, -0.49, -3);
       scene.add( river );
 
-
-
-
-
-
-      
       // Skilgreina ljósgjafa og bæta honum í sviðsnetið
       const light = new THREE.DirectionalLight(0xFFFFFF, 1);
       light.position.set(0, 10, 0);
       light.target.position.set(-5, 0, 0);
       scene.add(light);
       scene.add(light.target);
+
+      document.addEventListener("keydown", function(e) {
+        switch (e.key) {
+          case 'w':
+            cube.position.z -= 1;
+            console.log("up");
+            break;
+          case 's':
+            cube.position.z += 1;
+            break;
+          case 'a':
+            cube.position.x -= 1;
+            break;
+          case 'd':
+            cube.position.x += 1;
+            break;
+        }
+      });
+
+      // Þarf að uppfæra ofanvörpunarfylki ef stikar myndavélar breytast
+      function updateCameraPosition() {
+        //camera.updateProjectionMatrix();
+        camera.position.set(cube.position.x, cube.position.y + 2, cube.position.z + 5);
+        camera.lookAt(cube.position);
+      }
       
       // Hreyfifall
 			const animate = function () {
         requestAnimationFrame( animate );
         controls.update();
+        updateCameraPosition();
 				renderer.render( scene, camera );
 			};
 
