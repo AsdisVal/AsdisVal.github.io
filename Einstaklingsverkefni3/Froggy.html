@@ -129,26 +129,20 @@
       scene.add(light.target);
 
       document.addEventListener("keydown", function(e) {
-        switch (e.key) {
-          case 'w':
-            cube.position.z -= 1;
-            console.log("up");
-            break;
-          case 's':
-            cube.position.z += 1;
-            break;
-          case 'a':
-            cube.position.x -= 1;
-            break;
-          case 'd':
-            cube.position.x += 1;
-            break;
+        var keyCode = e.which;
+        if(keyCode == 38) {
+          cube.position.z -= 1;
+        } else if(keyCode == 40) {
+          cube.position.z += 1;
+        } else if(keyCode == 37) {
+          cube.position.x -= 1;
+        } else if(keyCode == 39) {
+          cube.position.x += 1;
         }
       });
 
-      // Þarf að uppfæra ofanvörpunarfylki ef stikar myndavélar breytast
+      // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum/cube
       function updateCameraPosition() {
-        //camera.updateProjectionMatrix();
         camera.position.set(cube.position.x, cube.position.y + 2, cube.position.z + 5);
         camera.lookAt(cube.position);
       }
