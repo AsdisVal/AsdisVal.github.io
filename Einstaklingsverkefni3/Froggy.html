@@ -106,41 +106,25 @@
       pavement.position.set(0, -0.48, 3);
       scene.add( pavement );
 
-      // Búa til bíla á gangbrautinni
-			const car1Geometry = new THREE.BoxGeometry(2, 1);
-			const car1Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-			const car1 = new THREE.Mesh( car1Geometry, car1Material );
-      car1.position.set(5, 0.02, 5);
-			scene.add( car1 );
-      
-      // Búa til bíla á gangbrautinni
-			const car2Geometry = new THREE.BoxGeometry(2, 1);
-			const car2Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-			const car2 = new THREE.Mesh( car2Geometry, car2Material );
-      car2.position.set(-5, 0.02, 4);
-			scene.add( car2 );
-      
-      // Búa til bíla á gangbrautinni
-			const car3Geometry = new THREE.BoxGeometry(2, 1);
-			const car3Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-			const car3 = new THREE.Mesh( car3Geometry, car3Material );
-      car3.position.set(0, 0.02, 3);
-			scene.add( car1 );
+      // Bílauppsetning
+      const cars = [];
+      const carPositions = [
+        { x: 5, z: 5 },
+        { x: -5, z: 4 },
+        { x: 0, z: 3 },
+        { x: 5, z: 2 },
+        { x: -2, z: 1 }
+      ];
 
-      // Búa til bíla á gangbrautinni
-			const car4Geometry = new THREE.BoxGeometry(2, 1);
-			const car4Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-			const car4 = new THREE.Mesh( car4Geometry, car4Material );
-      car4.position.set(5, 0.02, 2);
-			scene.add( car4 );
-
-      // Búa til bíla á gangbrautinni
-			const car5Geometry = new THREE.BoxGeometry(2, 1);
-			const car5Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-			const car5 = new THREE.Mesh( car5Geometry, car5Material );
-      car5.position.set(-2, 0.02, 1);
-			scene.add( car5 );
-
+      for (const pos of carPositions) {
+        const carGeometry = new THREE.BoxGeometry(2, 1);
+        const carMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000 });
+        const car = new THREE.Mesh(carGeometry, carMaterial);
+        car.position.set(pos.x, 0.02, pos.z);
+        car.direction = Math.random() > 0.5 ? 0.05 : -0.05; 
+        scene.add(car);
+        cars.push(car);
+      }
 
       // Búa til á
       const riverGeometry = new THREE.PlaneGeometry(14, 5);
@@ -150,6 +134,26 @@
       river.position.set(0, -0.49, -3);
       scene.add( river );
 
+      //Trumbauppsetning
+      const planks = [];
+      const plankPositions = [
+        {x: 0, z: -1},
+        {x: 1, z: -2},
+        {x: 2, z: -3},
+        {x: 3, z: -4},
+        {x: 4, z: -5}
+      ];
+
+      for(const posit of plankPositions) {
+        const plankGeometry = new THREE.PlaneGeometry(6, 1);
+        const plankMaterial = new THREE.MeshPhongMaterial({ color: 0x964B00 });
+        const plank = new THREE.Mesh(plankGeometry, plankMaterial);
+        plank.position.set(posit.x, -0.48, posit.z);
+        plank.direction = Math.random() > 0.5 ? 0.05 : -0.05;
+        scene.add(plank);
+        planks.push(plank);
+      }
+/*
       // Búa til trumb 1
       const plank1Geometry = new THREE.PlaneGeometry(6, 1);
       const plank1Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
@@ -189,10 +193,10 @@
       plank5.rotation.x = -0.5 * Math.PI;
       plank5.position.set(4, -0.48, -5);
       scene.add( plank5 );
-
+*/
       // Skilgreina ljósgjafa og bæta honum í sviðsnetið
       const light = new THREE.DirectionalLight(0xFFFFFF, 1);
-      light.position.set(0, 10, 0);
+      light.position.set(0, 10, 5);
       light.target.position.set(-5, 0, 0);
       scene.add(light);
       scene.add(light.target);
@@ -219,6 +223,26 @@
       // Hreyfifall
 			const animate = function () {
         requestAnimationFrame( animate );
+        cars.forEach(car => {
+          car.position.x += car.direction;
+
+          if(car.position.x > 7) {
+            car.position.x = -7;
+          } else if(car.position.x < -7) {
+            car.position.x = 7;
+          }
+        });
+
+        planks.forEach(plank => {
+          plank.position.x += plank.direction;
+          if(plank.position.x > 10) {
+            plank.position.x = -10;
+          } else if(plank.position.x < -10) {
+            plank.position.x = 10;
+          }
+
+        });
+
         updateCameraPosition();
 				renderer.render( scene, camera );
 			};
