@@ -171,6 +171,7 @@
       scene.add(light);
       scene.add(light.target);
 
+      let cameraMode = 1;
       document.addEventListener("keydown", function(e) {
         var keyCode = e.which;
         if(keyCode == 38) {
@@ -181,16 +182,24 @@
           frog.position.x -= 1;
         } else if(keyCode == 39) {
           frog.position.x += 1;
+        } else if(keyCode == 50) {
+          cameraMode = cameraMode === 1 ? 2 : 1;
         }
       });
 
       // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum/cube
       function updateCameraPosition() {
-        camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
-        camera.lookAt(frog.position);
+        if(cameraMode === 1) {
+          camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
+          camera.lookAt(frog.position);
+        } else if (cameraMode === 2) {
+          camera.position.set(frog.position.x, frog.position.y + 0.3, frog.position.z + 0.5);
+          camera.lookAt(new THREE.Vector3(frog.position.x, frog.position.y + 0.3, frog.position.z - 1));
+          //camera.rotation.set(0, Math.PI, 0);
+          //camera.lookAt(frog.position);
+        }
       }
 
-      //const onPlank = false;
       // Fall þegar froskur er á planka
       function checkFrogOnPlank() {
         let onPlank = false; 
@@ -243,6 +252,7 @@
         checkFrogInRiver();
 
         updateCameraPosition();
+  
 				renderer.render( scene, camera );
 			};
 
