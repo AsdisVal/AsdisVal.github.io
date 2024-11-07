@@ -190,6 +190,7 @@
         camera.lookAt(frog.position);
       }
 
+      //const onPlank = false;
       // Fall þegar froskur er á planka
       function checkFrogOnPlank() {
         let onPlank = false; 
@@ -197,7 +198,7 @@
           if(Math.abs(frog.position.z - plank.position.z) < 0.5 && 
           frog.position.x >= plank.position.x -3 &&
           frog.position.x <= plank.position.x +3) {
-            frog.position.x += plank.direction;
+            frog.position.x += plank.direction*0.5;
             onPlank = true;
           }
         });
