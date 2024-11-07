@@ -49,11 +49,6 @@
         }
       }
       
-      
-      
-      // Bæta við músarstýringu
-      const controls = new THREE.OrbitControls( camera, canvas );
-
       // Skilgreina birtingaraðferð með afbjögun (antialias)
 			const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 
@@ -63,8 +58,6 @@
 			const cube = new THREE.Mesh( geometry, material );
       cube.position.set(0, 0.02, 6);
 			scene.add( cube );
-
-      
       
       // Búa til kúlu með Phong áferð og bæta í sviðsnetið
 			const ballGeometry = new THREE.SphereGeometry( 0.5, 20, 20 );
@@ -113,6 +106,42 @@
       pavement.position.set(0, -0.48, 3);
       scene.add( pavement );
 
+      // Búa til bíla á gangbrautinni
+			const car1Geometry = new THREE.BoxGeometry(2, 1);
+			const car1Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+			const car1 = new THREE.Mesh( car1Geometry, car1Material );
+      car1.position.set(5, 0.02, 5);
+			scene.add( car1 );
+      
+      // Búa til bíla á gangbrautinni
+			const car2Geometry = new THREE.BoxGeometry(2, 1);
+			const car2Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+			const car2 = new THREE.Mesh( car2Geometry, car2Material );
+      car2.position.set(-5, 0.02, 4);
+			scene.add( car2 );
+      
+      // Búa til bíla á gangbrautinni
+			const car3Geometry = new THREE.BoxGeometry(2, 1);
+			const car3Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+			const car3 = new THREE.Mesh( car3Geometry, car3Material );
+      car3.position.set(0, 0.02, 3);
+			scene.add( car1 );
+
+      // Búa til bíla á gangbrautinni
+			const car4Geometry = new THREE.BoxGeometry(2, 1);
+			const car4Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+			const car4 = new THREE.Mesh( car4Geometry, car4Material );
+      car4.position.set(5, 0.02, 2);
+			scene.add( car4 );
+
+      // Búa til bíla á gangbrautinni
+			const car5Geometry = new THREE.BoxGeometry(2, 1);
+			const car5Material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+			const car5 = new THREE.Mesh( car5Geometry, car5Material );
+      car5.position.set(-2, 0.02, 1);
+			scene.add( car5 );
+
+
       // Búa til á
       const riverGeometry = new THREE.PlaneGeometry(14, 5);
       const riverMaterial = new THREE.MeshPhongMaterial( { color: 0x8fcdd9 }); // munstur seinna
@@ -120,6 +149,46 @@
       river.rotation.x = -0.5 * Math.PI;
       river.position.set(0, -0.49, -3);
       scene.add( river );
+
+      // Búa til trumb 1
+      const plank1Geometry = new THREE.PlaneGeometry(6, 1);
+      const plank1Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
+      const plank1 = new THREE.Mesh( plank1Geometry, plank1Material );
+      plank1.rotation.x = -0.5 * Math.PI;
+      plank1.position.set(0, -0.48, -1);
+      scene.add( plank1 );
+
+      // Búa til trumb 2
+      const plank2Geometry = new THREE.PlaneGeometry(6, 1);
+      const plank2Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
+      const plank2 = new THREE.Mesh( plank2Geometry, plank2Material );
+      plank2.rotation.x = -0.5 * Math.PI;
+      plank2.position.set(1, -0.48, -2);
+      scene.add( plank2 );
+
+      // Búa til trumb 3
+      const plank3Geometry = new THREE.PlaneGeometry(6, 1);
+      const plank3Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
+      const plank3 = new THREE.Mesh( plank3Geometry, plank3Material );
+      plank3.rotation.x = -0.5 * Math.PI;
+      plank3.position.set(2, -0.48, -3);
+      scene.add( plank3 );
+
+       // Búa til trumb 4
+       const plank4Geometry = new THREE.PlaneGeometry(6, 1);
+      const plank4Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
+      const plank4 = new THREE.Mesh( plank4Geometry, plank4Material );
+      plank4.rotation.x = -0.5 * Math.PI;
+      plank4.position.set(3, -0.48, -4);
+      scene.add( plank4 );
+
+       // Búa til trumb 5
+       const plank5Geometry = new THREE.PlaneGeometry(6, 1);
+      const plank5Material = new THREE.MeshPhongMaterial( { color: 0x964B00 }); // munstur seinna
+      const plank5 = new THREE.Mesh( plank5Geometry, plank5Material );
+      plank5.rotation.x = -0.5 * Math.PI;
+      plank5.position.set(4, -0.48, -5);
+      scene.add( plank5 );
 
       // Skilgreina ljósgjafa og bæta honum í sviðsnetið
       const light = new THREE.DirectionalLight(0xFFFFFF, 1);
@@ -150,7 +219,6 @@
       // Hreyfifall
 			const animate = function () {
         requestAnimationFrame( animate );
-        controls.update();
         updateCameraPosition();
 				renderer.render( scene, camera );
 			};
