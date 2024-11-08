@@ -52,6 +52,12 @@
       // Skilgreina birtingaraðferð með afbjögun (antialias)
 			const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 
+      // Skilgreinum hleðsluhlut fyrir mynstur
+      const loader = new THREE.TextureLoader();
+
+      const texture = loader.load("./myndir/pavement.png");
+
+
       // Búa til frosk með Phong áferð (Phong material) og bæta í sviðsnetið
 			const geometry = new THREE.BoxGeometry();
 			const material = new THREE.MeshPhongMaterial( { color: 0x44aa88 } );
@@ -69,7 +75,7 @@
 
       // Búa til upphafs gangstétt
       const startingRoadGeometry = new THREE.PlaneGeometry(14, 1);
-      const startingRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const startingRoadMaterial = new THREE.MeshPhongMaterial( { map: texture });
       const startingRoad = new THREE.Mesh( startingRoadGeometry, startingRoadMaterial );
       startingRoad.rotation.x = -0.5 * Math.PI;
       startingRoad.position.set(0, -0.48, 6);
@@ -77,7 +83,7 @@
 
       // Búa til milli-gangstétt
       const middleRoadGeometry = new THREE.PlaneGeometry(14, 1);
-      const middleRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const middleRoadMaterial = new THREE.MeshPhongMaterial( { map: texture });
       const middleRoad = new THREE.Mesh( middleRoadGeometry, middleRoadMaterial );
       middleRoad.rotation.x = -0.5 * Math.PI;
       middleRoad.position.set(0, -0.48, 0);
@@ -85,7 +91,7 @@
 
       // Búa til seinustu gangstéttina
       const finalRoadGeometry = new THREE.PlaneGeometry(14, 1);
-      const finalRoadMaterial = new THREE.MeshPhongMaterial( { color: 0xa9a9a9 });
+      const finalRoadMaterial = new THREE.MeshPhongMaterial( { map: texture });
       const finalRoad = new THREE.Mesh( finalRoadGeometry, finalRoadMaterial );
       finalRoad.rotation.x = -0.5 * Math.PI;
       finalRoad.position.set(0, -0.48, -6);
