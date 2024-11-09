@@ -13,19 +13,17 @@
     // Ásdís Valtýsdóttir, Haust 2024
     ///////////////////////////////////////////////////////////
     
-    // Ná í striga
-    const canvas = document.querySelector('#c');
+    let isMouseLookActive = false;
+    let mouseX, mouseY = 0;
+    let cameraRotationX, cameraRotationY = 0;
 
-    // Skilgreina sviðsnet
+    const canvas = document.querySelector('#c');
 		const scene = new THREE.Scene();
     scene.background = new THREE.Color('lightblue');
-            
-
-    // Skilgreina myndavél og staðsetja hana
-		const camera = new THREE.PerspectiveCamera( 60, canvas.clientWidth/canvas.clientHeight, 0.1, 1000 );
+    
+    const camera = new THREE.PerspectiveCamera( 60, canvas.clientWidth/canvas.clientHeight, 0.1, 1000 );
 		camera.position.set(0, 2, 10);
 
-    // Klasi sem tryggir að 'near'-gildið í valmyndinni sé alltaf minna en 'far'-gildið
     class MinMaxGUIHelper {
       constructor(obj, minProp, maxProp, minDif) {
         this.obj = obj;
@@ -49,14 +47,12 @@
         }
       }
       
-      // Skilgreina birtingaraðferð með afbjögun (antialias)
-			const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+      const controls = new THREE.OrbitControls(camera, canvas);
 
-      // Skilgreinum hleðsluhlut fyrir mynstur
+    
       const loader = new THREE.TextureLoader();
-
       const texture = loader.load("./myndir/pavement.png");
-
 
       // Búa til frosk með Phong áferð (Phong material) og bæta í sviðsnetið
 			const geometry = new THREE.BoxGeometry();
@@ -96,6 +92,10 @@
       finalRoad.rotation.x = -0.5 * Math.PI;
       finalRoad.position.set(0, -0.48, -6);
       scene.add( finalRoad );
+
+         
+      
+      
 
       // Búa til gangbraut
       const pavementGeometry = new THREE.PlaneGeometry(14, 5);
@@ -141,6 +141,47 @@
         }
       }
 
+      
+
+      let fliesAdded = false;
+      const flies = [];
+      const flyPositions = [
+        { x: 0, z: -6 },
+        { x: 4, z: -6 },
+        { x: -4, z: -6 }
+      ];
+
+      function addFlies() {
+        for( const pos of flyPositions) {
+          const flyGeometry = new THREE.BoxGeometry(0.5, 0.5);
+          const flyMaterial = new THREE.MeshPhongMaterial( { color: 0x524d50 });
+          const fly = new THREE.Mesh(flyGeometry, flyMaterial);
+          fly.position.set(pos.x, 0.5, pos.z);
+          fly.direction = Math.random() > 0.5 ? 0.03 : -0.03; 
+          scene.add(fly);
+          flies.push(fly);
+        }
+      }
+
+      let score = 0;
+
+      function updateScore() {
+        console.log(`Score: ${score}`);
+      }
+
+      function checkFlyCollision() {
+        flies.forEach( (fly, index) => {
+          if(Math.abs(frog.position.x - fly.position.x) < 0.5 &&
+        Math.abs(frog.position.z - fly.position.z) < 0.5) {
+          score += 1;
+          document.getElementById("score").innerText = `Score: ${score}`;
+          scene.remove(fly);
+          flies.splice(index, 1);
+          updateScore();
+        }
+        });
+      }
+
       // Búa til á
       const riverGeometry = new THREE.PlaneGeometry(14, 5);
       const riverMaterial = new THREE.MeshPhongMaterial( { color: 0x8fcdd9 }); // munstur seinna
@@ -178,7 +219,7 @@
       scene.add(light.target);
 
       let cameraMode = 1;
-      document.addEventListener("keydown", function(e) {
+      window.addEventListener("keydown", function(e) {
         var keyCode = e.which;
         if(keyCode == 38) {
           frog.position.z -= 1;
@@ -189,7 +230,10 @@
         } else if(keyCode == 39) {
           frog.position.x += 1;
         } else if(keyCode == 50) {
-          cameraMode = cameraMode === 1 ? 2 : 1;
+          cameraMode = 2;
+          activateMouse();
+        } else if(keyCode == 49) {
+          cameraMode = 1;
         }
       });
 
@@ -198,11 +242,11 @@
         if(cameraMode === 1) {
           camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
           camera.lookAt(frog.position);
+          cameraRotationX = 0;
+          cameraRotationY = 0;
         } else if (cameraMode === 2) {
           camera.position.set(frog.position.x, frog.position.y + 0.3, frog.position.z + 0.5);
           camera.lookAt(new THREE.Vector3(frog.position.x, frog.position.y + 0.3, frog.position.z - 1));
-          //camera.rotation.set(0, Math.PI, 0);
-          //camera.lookAt(frog.position);
         }
       }
 
@@ -229,10 +273,18 @@
           frog.position.set(0, 0.02, 6);
         }
       }
+
       
-      // Hreyfifall
+
+      
+      // Hreyfifallið
 			const animate = function () {
         requestAnimationFrame( animate );
+        if(frog.position.z <= -6 && !fliesAdded) {
+          addFlies();
+          fliesAdded = true;
+        }
+
         cars.forEach(car => {
           car.position.x += car.direction;
 
@@ -240,6 +292,16 @@
             car.position.x = -7;
           } else if(car.position.x < -7) {
             car.position.x = 7;
+          }
+        });
+
+        flies.forEach(fly => {
+          fly.position.x += fly.direction;
+
+          if(fly.position.x > 7) {
+            fly.position.x = -7;
+          } else if(fly.position.x < -7) {
+            fly.position.x = 7;
           }
         });
 
@@ -256,6 +318,7 @@
         checkFrogOnPlank();
         checkCarCollision();
         checkFrogInRiver();
+        checkFlyCollision();
 
         updateCameraPosition();
   
@@ -264,5 +327,8 @@
 
 			animate();
 		</script>
+    <div class="scoreCard">
+      <p id="score"></p>
+    </div>
 	</body>
 </html>
