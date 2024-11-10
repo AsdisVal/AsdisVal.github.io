@@ -26,11 +26,7 @@
     const camera = new THREE.PerspectiveCamera( 60, canvas.clientWidth/canvas.clientHeight, 0.1, 1000 );
 		camera.position.set(0, 2, 10);
 
-    
-
-    //objLoader.load('resources/models/skull/skull.obj', (root) => {
-    //scene.add(root);
-    //});
+  
 
     class MinMaxGUIHelper {
       constructor(obj, minProp, maxProp, minDif) {
@@ -66,21 +62,40 @@
       scene.add(light);
       scene.add(light.target);
 
-      
-      
-      const objLoader = new THREE.OBJLoader();
-      
+      var frog;
+      const mtlLoader = new THREE.MTLLoader();
+      mtlLoader.load('./Froggy_files/models/frogger.mtl', (materials) => {
+        materials.preload();
+        
+        const objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load('./Froggy_files/models/frogger.obj', (object) => {
+          object.rotation.x = Math.PI * -.5;
+          object.rotation.z = Math.PI;
+          object.scale.set(0.5, 0.5, 0.5);
+          object.position.set(0, 0.02, 6);
+          
+          
+
+          scene.add(object);
+          
+          frog = object;
+        });
+      });
 
     
       const loader = new THREE.TextureLoader();
       const texture = loader.load("./myndir/pavement.png");
 
       // Búa til frosk með Phong áferð (Phong material) og bæta í sviðsnetið
-			const geometry = new THREE.BoxGeometry();
+			
+      /*const geometry = new THREE.BoxGeometry();
 			const material = new THREE.MeshPhongMaterial( { color: 0x44aa88 } );
-			const frog = new THREE.Mesh( geometry, material );
+			
+      const frog = new THREE.Mesh( geometry, material );
       frog.position.set(0, 0.02, 6);
 			scene.add( frog );
+      */ 
       
       // Búa til sléttu með Phong áferð
       const planeGeometry = new THREE.PlaneGeometry( 14, 13 ); // 14x13 grind
