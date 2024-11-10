@@ -55,6 +55,7 @@
     scene.add(light);
     scene.add(light.target);
 
+
     var frog;
     const mtlLoader = new THREE.MTLLoader();
     mtlLoader.load("./Froggy_files/models/frogModel/12268_banjofrog_v1_L3.mtl", (materials) => {
@@ -64,7 +65,7 @@
       objLoader.load("./Froggy_files/models/frogModel/12268_banjofrog_v1_L3.obj", (object) => {
         object.rotation.x = Math.PI * -.5;
         object.rotation.z = Math.PI;
-        object.scale.set(0.25, 0.25, 0.25);
+        object.scale.set(0.15, 0.15, 0.15);
         object.position.set(0, -0.25, 6);
         scene.add(object);
         frog = object;
@@ -89,7 +90,9 @@
     const loader = new THREE.TextureLoader();
     const texture = loader.load("./myndir/pavement.png");
 
-    // Búa til sléttu með Phong áferð
+    
+    // Búa til sléttu 
+    
     const planeGeometry = new THREE.PlaneGeometry( 14, 13 ); // 14x13 grind
     const planeMaterial = new THREE.MeshPhongMaterial( { color: 0xcccccc } );
     const plane = new THREE.Mesh( planeGeometry, planeMaterial );
@@ -122,8 +125,11 @@
     scene.add( finalRoad );
 
     // Búa til gangbraut
+    const roadLoader = new THREE.TextureLoader();
+    const roadTexture = roadLoader.load("./myndir/road.png");
+
     const pavementGeometry = new THREE.PlaneGeometry(14, 5);
-    const pavementMaterial = new THREE.MeshPhongMaterial( { color: 0x524d50 }); // munstur seinna
+    const pavementMaterial = new THREE.MeshPhongMaterial( { map: roadTexture }); // munstur seinna
     const pavement = new THREE.Mesh( pavementGeometry, pavementMaterial );
     pavement.rotation.x = -0.5 * Math.PI;
     pavement.position.set(0, -0.48, 3);
@@ -160,7 +166,7 @@
       let collisionDetected = false;
 
       cars.forEach(car => {
-        if(Math.abs(frog.position.x - car.position.x) < 1.5 &&
+        if(Math.abs(frog.position.x - car.position.x) < 1 &&
           Math.abs(frog.position.z - car.position.z) < 1) {
             collisionDetected = true;
           }
@@ -210,12 +216,18 @@
     }
 
     // Búa til á
+    const riverLoader = new THREE.TextureLoader();
+    const riverTexture = riverLoader.load("./myndir/river.png");
+
     const riverGeometry = new THREE.PlaneGeometry(14, 5);
-    const riverMaterial = new THREE.MeshPhongMaterial( { color: 0x8fcdd9 }); // munstur seinna
+    const riverMaterial = new THREE.MeshPhongMaterial( { map: riverTexture }); 
     const river = new THREE.Mesh( riverGeometry, riverMaterial );
     river.rotation.x = -0.5 * Math.PI;
     river.position.set(0, -0.49, -3);
     scene.add( river );
+
+    const plankLoader = new THREE.TextureLoader();
+    const plankTexture = plankLoader.load("./myndir/plank_pic.jpg");
 
     //Trumba-uppsetning
     const planks = [];
@@ -229,7 +241,7 @@
 
     for(const pos of plankPositions) {
       const plankGeometry = new THREE.PlaneGeometry(6, 1);
-      const plankMaterial = new THREE.MeshPhongMaterial({ color: 0x964B00 });
+      const plankMaterial = new THREE.MeshPhongMaterial({ map: plankTexture });
       const plank = new THREE.Mesh(plankGeometry, plankMaterial);
       plank.position.set(pos.x, -0.48, pos.z);
       plank.direction = Math.random() > 0.5 ? 0.01 : -0.01;
@@ -252,16 +264,16 @@
       else if(keyCode == 49) {cameraMode = 1;}
       });
 
-    // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum/cube
+    // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum
     function updateCameraPosition() {
       if(!frog) return;
 
       if(cameraMode === 1) {
-        camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
+        camera.position.set(frog.position.x, frog.position.y + 3, frog.position.z + 4);
         camera.lookAt(frog.position);
       } else if (cameraMode === 2) {
-        camera.position.set(frog.position.x, frog.position.y + 0.3, frog.position.z + 0.5);
-        camera.lookAt(new THREE.Vector3(frog.position.x, frog.position.y + 0.3, frog.position.z - 1));
+        camera.position.set(frog.position.x, frog.position.y + 0.3, frog.position.z-0.5);
+        camera.lookAt(new THREE.Vector3(frog.position.x, frog.position.y + 0.3, frog.position.z -1));
       }
     }
 
@@ -293,16 +305,16 @@
       }
     }
 
-    // Hreyfifallið
-		const animate = function () {
-      requestAnimationFrame( animate );
+    function frogArrivalForFlies() {
       if(frog) {
         if(frog.position.z <= -6 && !fliesAdded) {
           addFlies();
           fliesAdded = true;
         }
       }
-        
+    }
+
+    function teleportCars() {
       cars.forEach(car => {
         car.position.x += car.direction;
 
@@ -312,7 +324,9 @@
           car.position.x = 7;
         }
       });
+    }
 
+    function teleportFlies() {
       flies.forEach(fly => {
         fly.position.x += fly.direction;
 
@@ -322,7 +336,9 @@
           fly.position.x = 7;
         }
       });
+    }
 
+    function teleportPlanks() {
       planks.forEach(plank => {
         plank.position.x += plank.direction;
         if(plank.position.x > 10) {
@@ -331,7 +347,17 @@
           plank.position.x = 10;
         }
       });
+    }
 
+    // Hreyfifallið
+		const animate = function () {
+      requestAnimationFrame( animate );
+
+      frogArrivalForFlies();
+      teleportCars();
+      teleportFlies();
+      teleportPlanks();
+    
       checkFrogOnPlank();
       checkCarCollision();
       checkFrogInRiver();
