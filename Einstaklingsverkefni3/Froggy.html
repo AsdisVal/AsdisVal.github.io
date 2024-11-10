@@ -64,12 +64,12 @@
 
       var frog;
       const mtlLoader = new THREE.MTLLoader();
-      mtlLoader.load('./Froggy_files/models/frogger.mtl', (materials) => {
+      mtlLoader.load("./Froggy_files/models/frogger.mtl", (materials) => {
         materials.preload();
         
         const objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
-        objLoader.load('./Froggy_files/models/frogger.obj', (object) => {
+        objLoader.load("./Froggy_files/models/frogger.obj", (object) => {
           object.rotation.x = Math.PI * -.5;
           object.rotation.z = Math.PI;
           object.scale.set(0.25, 0.25, 0.25);
@@ -163,6 +163,7 @@
 
       // Árekstur á bíl og froski
       function checkCarCollision() {
+        if(!frog) return;
         let collisionDetected = false;
 
         cars.forEach(car => {
@@ -173,7 +174,7 @@
         });
 
         if(collisionDetected) {
-          frog.position.set(0, 0.02, 6);
+          frog.position.set(0, -0.25, 6);
         }
       }
 
@@ -207,8 +208,7 @@
 
       function checkFlyCollision() {
         flies.forEach( (fly, index) => {
-          if(Math.abs(frog.position.x - fly.position.x) < 0.5 &&
-        Math.abs(frog.position.z - fly.position.z) < 0.5) {
+          if(Math.abs(frog.position.x - fly.position.x) < 0.5 && Math.abs(frog.position.z - fly.position.z) < 0.5) {
           score += 1;
           document.getElementById("score").innerText = `Score: ${score}`;
           scene.remove(fly);
@@ -270,6 +270,8 @@
 
       // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum/cube
       function updateCameraPosition() {
+        if(!frog) return;
+        
         if(cameraMode === 1) {
           camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
           camera.lookAt(frog.position);
@@ -285,11 +287,13 @@
       function checkFrogOnPlank() {
         let onPlank = false; 
         planks.forEach(plank => {
-          if(Math.abs(frog.position.z - plank.position.z) < 0.5 && 
-          frog.position.x >= plank.position.x -3 &&
-          frog.position.x <= plank.position.x +3) {
-            frog.position.x += plank.direction*0.5;
-            onPlank = true;
+          if(frog) {
+            if(Math.abs(frog.position.z - plank.position.z) < 0.5 && 
+              frog.position.x >= plank.position.x -3 &&
+              frog.position.x <= plank.position.x +3) {
+              frog.position.x += plank.direction*0.5;
+              onPlank = true;
+            }
           }
         });
         return onPlank;
@@ -297,11 +301,13 @@
 
       // froskur í áni
       function checkFrogInRiver() {
+        if(!frog) return;
+
         const isInRiver = (frog.position.z >= -5.5 && frog.position.z <= -0.5);
         const onPlank = checkFrogOnPlank();
 
         if(isInRiver && !onPlank) {
-          frog.position.set(0, 0.02, 6);
+          frog.position.set(0, -0.25, 6);
         }
       }
 
@@ -311,11 +317,13 @@
       // Hreyfifallið
 			const animate = function () {
         requestAnimationFrame( animate );
-        if(frog.position.z <= -6 && !fliesAdded) {
-          addFlies();
-          fliesAdded = true;
+        if(frog) {
+          if(frog.position.z <= -6 && !fliesAdded) {
+            addFlies();
+            fliesAdded = true;
+          }
         }
-
+        
         cars.forEach(car => {
           car.position.x += car.direction;
 
