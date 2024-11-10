@@ -103,15 +103,7 @@
       const loader = new THREE.TextureLoader();
       const texture = loader.load("./myndir/pavement.png");
 
-      // Búa til frosk með Phong áferð (Phong material) og bæta í sviðsnetið
-			
-      /*const geometry = new THREE.BoxGeometry();
-			const material = new THREE.MeshPhongMaterial( { color: 0x44aa88 } );
-			
-      const frog = new THREE.Mesh( geometry, material );
-      frog.position.set(0, 0.02, 6);
-			scene.add( frog );
-      */ 
+      
       
       // Búa til sléttu með Phong áferð
       const planeGeometry = new THREE.PlaneGeometry( 14, 13 ); // 14x13 grind
@@ -175,7 +167,7 @@
 
         for (const pos of carPositions) {
           const car = carModel.clone();
-          car.position.set(pos.x, -0.25, pos.z);
+          car.position.set(pos.x, -0.5, pos.z);
           car.direction = Math.random() > 0.5 ? 0.03 : -0.03; 
           scene.add(car);
           cars.push(car);
