@@ -13,7 +13,7 @@
     
     <script>
     ///////////////////////////////////////////////////////////
-    // Ásdís Valtýsdóttir, Haust 2024
+    // Ásdís Valtýsdóttir, Nóvember 2024
     ///////////////////////////////////////////////////////////
     
     const canvas = document.querySelector('#c');
@@ -253,10 +253,10 @@
     let cameraMode = 1;
     window.addEventListener("keydown", function(e) {
       var keyCode = e.which;
-      if(keyCode == 38) {frog.position.z -= 1;}
-      else if(keyCode == 40) {frog.position.z += 1;} 
-      else if(keyCode == 37) {frog.position.x -= 1;} 
-      else if(keyCode == 39) {frog.position.x += 1;} 
+      if(keyCode == 38 && frog.position.z > -6) {frog.position.z -= 1;}
+      else if(keyCode == 40 && frog.position.z < 6) {frog.position.z += 1;} 
+      else if(keyCode == 37 && frog.position.x > -7) {frog.position.x -= 1;} 
+      else if(keyCode == 39 && frog.position.x < 7) {frog.position.x += 1;} 
       else if(keyCode == 50) {
         cameraMode = 2;
         activateMouse();
@@ -349,6 +349,31 @@
       });
     }
 
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+
+    function startTimer() {
+      startTime = Date.now();
+      timerInterval = setInterval(()=> {
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById("timer").innerText = `Time: ${elapsedTime}s`;
+      }, 1000);
+    }
+
+    function stopTimer () {
+      clearInterval(timerInterval);
+      document.getElementById("timer").innerText = `Final Time: ${elapsedTime}s`;
+    }
+
+    startTimer();
+
+    function checkfrogReachedDestination() {
+      if( frog && frog.position.z <= -6) {
+        stopTimer();
+      }
+    }
+
     // Hreyfifallið
 		const animate = function () {
       requestAnimationFrame( animate );
@@ -362,6 +387,7 @@
       checkCarCollision();
       checkFrogInRiver();
       checkFlyCollision();
+      checkfrogReachedDestination();
 
       updateCameraPosition();
   
@@ -370,9 +396,19 @@
 
 		animate();
 		</script>
+    <link href="styles.css" rel="stylesheet"/>
 
     <div class="scoreCard">
+      <header>Froggy í þrívídd</header>
+      <p>Notaðu örvatakkana til þess að komast að leiðarenda.</p>
+      <p>Þú skalt forðast bíla og læki til þess að klára leikinn.</p>
+      <p>Þegar þú hefur komist á leiðarenda eru verðlaun handa þér.</p>
+      <p>Ef þú villt prófa leikinn aftur skaltu smella á hnappinn </p>
+      <div>
+        <button id="button" onclick="window.location.reload();"> Hefja leik aftur</button>
+      </div>
       <p id="score"></p>
+      <p id="timer">Time: 0s</p>
     </div>
 	</body>
 </html>

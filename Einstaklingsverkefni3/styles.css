@@ -1,0 +1,63 @@
+@charset "UTF-8";
+/* Reset og border-box á allt */
+
+
+html {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Stillingar */
+:root {
+  /* Grunn bilið okkar er 1rem == 16px */
+  --font-base-body-px: 16px;
+  --spacing: 1rem;
+}
+
+body {
+  background-color:cornsilk;
+  
+}
+
+
+h1,
+h2,
+h3 {
+  /* Setjum almennt bil á eftir fyrirsögnum */
+  margin-bottom: var(--spacing);
+}
+
+
+
+main {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1000px;
+}
+
+header {
+  font-size:xx-large;
+  margin-left: 190px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  
+  
+  
+}
+
+canvas {
+  border: 2px solid black;
+  
+  
+}
+
+
+
