@@ -64,12 +64,12 @@
 
       var frog;
       const mtlLoader = new THREE.MTLLoader();
-      mtlLoader.load("./Froggy_files/models/frogger.mtl", (materials) => {
+      mtlLoader.load("./Froggy_files/models/12268_banjofrog_v1_L3.mtl", (materials) => {
         materials.preload();
         
         const objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
-        objLoader.load("./Froggy_files/models/frogger.obj", (object) => {
+        objLoader.load("./Froggy_files/models/12268_banjofrog_v1_L3.obj", (object) => {
           object.rotation.x = Math.PI * -.5;
           object.rotation.z = Math.PI;
           object.scale.set(0.25, 0.25, 0.25);
@@ -271,7 +271,7 @@
       // Uppfæra staðsetningu myndavélar m.t.t hreyfingu á froskinum/cube
       function updateCameraPosition() {
         if(!frog) return;
-        
+
         if(cameraMode === 1) {
           camera.position.set(frog.position.x, frog.position.y + 2, frog.position.z + 5);
           camera.lookAt(frog.position);
